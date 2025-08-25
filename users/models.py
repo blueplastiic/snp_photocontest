@@ -1,6 +1,5 @@
 from django.db import models
-from django.utils import timezone 
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, Group
 
 
 
@@ -8,11 +7,23 @@ class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password, **other_fields):
         if not email:
             raise ValueError('You must provide an email')
+        if not username:
+            raise ValueError('Yout must provide a username')
+        if not password:
+            raise ValueError('You must provide a password')
 
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **other_fields)
         user.set_password(password)
         user.save()
+
+        if other_fields.get('is_staff') and not other_fields.get('is_superuser'):
+            moderators_group,_=Group.objects.get_or_create(name='Moderators')
+            user.groups.add(moderators_group)
+        elif not (other_fields.get('is_staff') and other_fields.get('is_superuser')):
+            participants_group,_=Group.objects.get_or_create(name='Participants')
+            user.groups.add(participants_group)
+
         return user
 
     def create_superuser(self, email, username, password, **other_fields):
