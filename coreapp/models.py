@@ -2,26 +2,16 @@ from django.conf import settings
 from django.db import models
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
+from .statuses import PhotoStatus
 
 
 class Photo(models.Model):
-    PENDING = "P"
-    REJECTED = "R"
-    APPROVED = "A"
-    DELETED = "D"
-    
-    STATUS_CHOICES = {
-        PENDING: "Pending",
-        REJECTED: "Rejected",
-        APPROVED: "Approved",
-        DELETED: "Deleted",
-    }
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=300)
     pub_date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=1,choices=STATUS_CHOICES, default=PENDING)
+    status = models.CharField(max_length=1,choices=PhotoStatus.STATUS_CHOICES, default=PhotoStatus.PENDING)
 
     original_version = models.ImageField(upload_to='photos')
 
