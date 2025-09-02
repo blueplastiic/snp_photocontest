@@ -37,6 +37,9 @@ class Photo(models.Model):
         processors=[ResizeToFit(100,100)],
         options={'quality': 50}
     )
+    class Meta:
+        permissions = [('change_photo_status', 'Can change the status of tasks')]
+
 
 class Vote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
