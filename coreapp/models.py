@@ -28,7 +28,7 @@ class Photo(models.Model):
         options={'quality': 50}
     )
     class Meta:
-        permissions = [('change_photo_status', 'Can change the status of tasks')]
+        permissions = [('change_status', 'Can change the status of tasks')]
 
 
 class Vote(models.Model):
