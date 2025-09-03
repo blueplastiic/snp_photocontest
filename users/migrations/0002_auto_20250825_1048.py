@@ -13,8 +13,7 @@ def create_groups(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
-        ('auth', '00012_alter_user_first_name_max_length')
+        ('users', '0001_initial')
     ]
 
     operations = [
