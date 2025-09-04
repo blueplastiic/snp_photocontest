@@ -1,6 +1,5 @@
-from django import forms
 from service_objects.services import Service
-from .models import User, CustomUserManager
+from .models import User
 
 class RegisterUserService(Service):
     def process(self):
@@ -12,4 +11,11 @@ class RegisterUserService(Service):
         new_user = User.objects.create_user(email=email, username=username, password=password, about=about) #pyright: ignore
         return new_user 
 
-
+class GetUserProfileService(Service):
+    def process(self): #pyright: ignore
+        user_id = self.data['user_id']
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise ValueError('Invalid id,user not found') #not sure about that one
+        return user       

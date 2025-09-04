@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 from .serializers import *
 from .services import *
 
@@ -8,15 +10,25 @@ class UserRegisterAPIView(APIView):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_user = RegisterUserService.execute(serializer.validated_data) 
-        return Response({'user': UserGetSerializer(new_user).data}) #pyright: ignore
+        return Response({'User': UserPublicGetSerializer(new_user).data}) #pyright: ignore
 
 class UserLoginAPIView(APIView):
     def post(self,request):
         pass
 
 class UserProfileAPIView(APIView):
+
+    permission_classes =[AllowAny]
+
     def get(self, request, *args, **kwargs):
-        pass
+        user_id = kwargs.get('user_id', None)
+        if not user_id:
+            return Response({'Error': 'User id missing'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = GetUserProfileService.execute({'user_id': user_id})
+        except ValueError:
+            return Response(data={'Error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'User': UserPublicGetSerializer(user).data})
 
 class UserSettingsAPIView(APIView):
     def get(self, request, *args, **kwargs):
