@@ -10,7 +10,7 @@ class UserRegisterAPIView(APIView):
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        new_user = RegisterUserService.execute(serializer.validated_data) 
+        new_user = RegisterUserService.execute(serializer.validated_data)
         return Response({'User': UserPublicGetSerializer(new_user).data}) #pyright: ignore
 #the token needs to the user
 
@@ -30,7 +30,7 @@ class UserProfileAPIView(APIView):
         if not user_id:
             return Response({'Error': 'User id missing'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = GetUserProfileService.execute({'user_id': user_id})
+            user = GetUserService.execute({'user_id': user_id})
         except ValueError:
             return Response(data={'Error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'User': UserPublicGetSerializer(user).data})
