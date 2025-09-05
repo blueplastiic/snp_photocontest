@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .permissions import *
 from .serializers import *
 from .services import *
 
@@ -18,7 +19,7 @@ class UserLoginAPIView(APIView):
 
 class UserProfileAPIView(APIView):
 
-    permission_classes =[AllowAny]
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         user_id = kwargs.get('user_id', None)
@@ -31,6 +32,9 @@ class UserProfileAPIView(APIView):
         return Response({'User': UserPublicGetSerializer(user).data})
 
 class UserSettingsAPIView(APIView):
+
+    permission_classes = [IsAuthenticated, IsProfileOwner]
+
     def get(self, request, *args, **kwargs):
         pass
     def put(self, request, *args, **kwargs):
