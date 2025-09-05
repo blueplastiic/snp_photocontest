@@ -12,10 +12,14 @@ class UserRegisterAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         new_user = RegisterUserService.execute(serializer.validated_data) 
         return Response({'User': UserPublicGetSerializer(new_user).data}) #pyright: ignore
+#the token needs to the user
+
 
 class UserLoginAPIView(APIView):
     def post(self,request):
         pass
+# the token needs to be passed by user
+
 
 class UserProfileAPIView(APIView):
 
