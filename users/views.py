@@ -10,16 +10,18 @@ class UserRegisterAPIView(APIView):
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        new_user = RegisterUserService.execute(serializer.validated_data)
-        return Response({'User': UserPublicGetSerializer(new_user).data}) #pyright: ignore
-#the token needs to the user
 
+        new_user = RegisterUserService.execute(serializer.validated_data)
+        token = GetUserTokenService.execute({'user': new_user})
+
+        response_data = {'id': new_user.id, 'token': token} #pyright: ignore
+        response_serializer = UserRegisterCompletedSerializer(response_data)
+
+        return Response({'User': response_serializer.data}) #pyright: ignore
 
 class UserLoginAPIView(APIView):
     def post(self,request):
         pass
-# the token needs to be passed by user
-
 
 class UserProfileAPIView(APIView):
 

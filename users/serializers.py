@@ -9,6 +9,10 @@ class UserRegisterSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=30)
     about = serializers.CharField(max_length=500, required=False)
 
+class UserRegisterCompletedSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    token = serializers.CharField()
+
 class UserPrivateGetSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     email = serializers.EmailField()
