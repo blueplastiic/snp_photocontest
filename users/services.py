@@ -3,7 +3,7 @@ from rest_framework.authtoken.models import Token
 from .models import User
 
 class RegisterUserService(Service):
-    def process(self):
+    def process(self): #change change change
         email = self.data['email']
         username = self.data['username']
         password = self.data['password']
@@ -11,6 +11,27 @@ class RegisterUserService(Service):
 
         new_user = User.objects.create_user(email=email, username=username, password=password, about=about) #pyright: ignore
         return new_user 
+
+class ConfirmActionService(Service):
+    def process(self): #pyright: ignore
+        user = self.data.get('user', None)
+        password = self.data.get('password', None)
+        if user and user.check_password(password):
+            return True
+        return False
+
+class UpdatePublicUserInfoService(Service):
+    def process(self):
+        user = self.data.get('user')
+        if not user:
+            raise ValueError('Invalid user instance')
+        username = self.data.get('username')
+        about = self.data.get('about')
+        if username:
+            user.username = username
+        if about:
+            user.about = about
+        user.save()
 
 class GetUserByIdService(Service):
     def process(self): #pyright: ignore
@@ -68,9 +89,8 @@ class DeleteUserService(Service):
     def process(self): #pyright: ignore
         user = self.data.get('user', None)
         password = self.data.get('password', None)
-        if user and user.check_password(password):
+        if ConfirmActionService.execute({'user':user, 'password': password}):
             user.delete()
             return True
-        else: 
-            return False
+        return False
 
