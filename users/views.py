@@ -14,13 +14,24 @@ class UserRegisterAPIView(APIView):
         new_user = RegisterUserService.execute(serializer.validated_data)
         token = GetUserTokenService.execute({'user': new_user})
 
-        response_data = {'id': new_user.id, 'token': token} #pyright: ignore
-        response_serializer = UserRegisterCompletedSerializer(response_data)
+        response_data = {'id': new_user.id, 'token': token.key} #pyright: ignore
+        response_serializer = UserGetTokenSerializer(response_data)
 
         return Response({'User': response_serializer.data}) #pyright: ignore
 
-class UserProfileAPIView(APIView):
+class UserUpdateTokenAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request): #not sure about the http-method
+        user = request.user
+        new_token = UpdateUserTokenService.execute({'user': user})
+
+        response_data = {'id': user.id, 'token': new_token.key} #pyright: ignore
+        response_serializer = UserGetTokenSerializer(response_data)
+
+        return Response({'User': response_serializer.data})
+
+class UserProfileAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
@@ -43,3 +54,4 @@ class UserSettingsAPIView(APIView):
         pass
     def delete(self, request, *args, **kwargs):
         pass
+

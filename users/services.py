@@ -12,7 +12,6 @@ class RegisterUserService(Service):
         new_user = User.objects.create_user(email=email, username=username, password=password, about=about) #pyright: ignore
         return new_user 
 
-
 class GetUserByIdService(Service):
     def process(self): #pyright: ignore
         user_id = self.data['user_id']
@@ -22,7 +21,7 @@ class GetUserByIdService(Service):
             raise ValueError('Invalid id,user not found') #not sure about that one
         return user
 
-class GetUserTokenService(Service): #THIS MAKES ME REALLY PROUD OF MYSELF
+class GetUserTokenService(Service): 
     def get_token(self, user):
         try:
             token = Token.objects.get(user=user) 
@@ -38,7 +37,30 @@ class GetUserTokenService(Service): #THIS MAKES ME REALLY PROUD OF MYSELF
 
         token = self.get_token(user)
         return token
-        
 
+class CreateUserTokenService(Service):
+    def process(self): #pyright: ignore
+        user = self.data.get('user', None)
+        if not user:
+            raise ValueError('Invalid user instance')
+        token,_ = Token.objects.get_or_create(user=user)
+        return token
 
+class DeleteUserTokenService(Service):
+    def process(self):
+        user = self.data.get('user', None)
+        if not user:
+            raise ValueError('Invalid user instance')
+        try: 
+            token = Token.objects.get(user=user)
+            token.delete()
+        except Token.DoesNotExist:
+            raise ValueError('Token not found')
+
+class UpdateUserTokenService(Service):
+    def process(self):
+        user = self.data.get('user', None)
+        DeleteUserTokenService.execute({'user': user})
+        new_token = CreateUserTokenService.execute({'user': user})
+        return new_token
 
