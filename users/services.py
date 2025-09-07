@@ -13,7 +13,7 @@ class RegisterUserService(Service):
         return new_user 
 
 
-class GetUserService(Service):
+class GetUserByIdService(Service):
     def process(self): #pyright: ignore
         user_id = self.data['user_id']
         try:
@@ -34,7 +34,7 @@ class GetUserTokenService(Service): #THIS MAKES ME REALLY PROUD OF MYSELF
         user_id = self.data.get('user_id', None)
         user = self.data.get('user', None)
         if not user:
-            user = GetUserService.execute({'user_id': user_id})
+            user = GetUserByIdService.execute({'user_id': user_id})
 
         token = self.get_token(user)
         return token

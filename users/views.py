@@ -32,7 +32,7 @@ class UserProfileAPIView(APIView):
         if not user_id:
             return Response({'Error': 'User id missing'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = GetUserService.execute({'user_id': user_id})
+            user = GetUserByIdService.execute({'user_id': user_id})
         except ValueError:
             return Response(data={'Error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'User': UserPublicGetSerializer(user).data})
