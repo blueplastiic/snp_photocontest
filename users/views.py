@@ -19,10 +19,6 @@ class UserRegisterAPIView(APIView):
 
         return Response({'User': response_serializer.data}) #pyright: ignore
 
-class UserLoginAPIView(APIView):
-    def post(self,request):
-        pass
-
 class UserProfileAPIView(APIView):
 
     permission_classes = [AllowAny]
