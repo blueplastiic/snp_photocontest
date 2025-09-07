@@ -57,10 +57,20 @@ class DeleteUserTokenService(Service):
         except Token.DoesNotExist:
             raise ValueError('Token not found')
 
-class UpdateUserTokenService(Service):
+class UpdateUserTokenService(Service): #transaction?
     def process(self):
         user = self.data.get('user', None)
         DeleteUserTokenService.execute({'user': user})
         new_token = CreateUserTokenService.execute({'user': user})
         return new_token
+
+class DeleteUserService(Service):
+    def process(self): #pyright: ignore
+        user = self.data.get('user', None)
+        password = self.data.get('password', None)
+        if user and user.check_password(password):
+            user.delete()
+            return True
+        else: 
+            return False
 

@@ -2,22 +2,21 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .permissions import *
 from .serializers import *
 from .services import *
 
 class UserRegisterAPIView(APIView):
     def post(self, request):
-        serializer = UserRegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        request_serializer = UserRegisterSerializer(data=request.data)
+        request_serializer.is_valid(raise_exception=True)
 
-        new_user = RegisterUserService.execute(serializer.validated_data)
+        new_user = RegisterUserService.execute(request_serializer.validated_data)
         token = GetUserTokenService.execute({'user': new_user})
 
         response_data = {'id': new_user.id, 'token': token.key} #pyright: ignore
         response_serializer = UserGetTokenSerializer(response_data)
 
-        return Response({'User': response_serializer.data}) #pyright: ignore
+        return Response({'detail': response_serializer.data}) #pyright: ignore
 
 class UserUpdateTokenAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -29,7 +28,7 @@ class UserUpdateTokenAPIView(APIView):
         response_data = {'id': user.id, 'token': new_token.key} #pyright: ignore
         response_serializer = UserGetTokenSerializer(response_data)
 
-        return Response({'User': response_serializer.data})
+        return Response({'detail': response_serializer.data})
 
 class UserProfileAPIView(APIView):
     permission_classes = [AllowAny]
@@ -37,21 +36,30 @@ class UserProfileAPIView(APIView):
     def get(self, request, *args, **kwargs):
         user_id = kwargs.get('user_id', None)
         if not user_id:
-            return Response({'Error': 'User id missing'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'User id missing'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = GetUserByIdService.execute({'user_id': user_id})
         except ValueError:
-            return Response(data={'Error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'User': UserPublicGetSerializer(user).data})
+            return Response(data={'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'detail': UserPublicGetSerializer(user).data})
 
-class UserSettingsAPIView(APIView):
+class UserDetailsAPIView(APIView):
 
-    permission_classes = [IsAuthenticated, IsProfileOwner]
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        pass
-    def put(self, request, *args, **kwargs):
-        pass
-    def delete(self, request, *args, **kwargs):
-        pass
+    def get(self, request):
+        serializer = UserPrivateGetSerializer(request.user)
+        return Response(serializer.data)
+        
+    def delete(self, request):
+        serializer = UserConfirmActionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        entered_password = serializer.validated_data['password'] #pyright: ignore 
+
+        if DeleteUserService.execute({'user': request.user, 'password': entered_password}):
+            return Response({'detail': 'You have deleted your account'}) 
+        else:
+            return Response(data={'detail': 'Incorrect password'}, status=status.HTTP_400_BAD_REQUEST)
+
 

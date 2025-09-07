@@ -21,3 +21,6 @@ class UserPublicGetSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=20)
     about = serializers.CharField(max_length=500)
 
+class UserConfirmActionSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=30)
+
