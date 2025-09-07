@@ -10,14 +10,14 @@ class UserGetTokenSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     token = serializers.CharField()
 
-class UserPrivateGetSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+class UserPrivateSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField()
     username = serializers.CharField(max_length=20)
     about = serializers.CharField(max_length=500)
 
-class UserPublicGetSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+class UserPublicSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(max_length=20)
     about = serializers.CharField(max_length=500)
 

@@ -41,15 +41,28 @@ class UserProfileAPIView(APIView):
             user = GetUserByIdService.execute({'user_id': user_id})
         except ValueError:
             return Response(data={'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'detail': UserPublicGetSerializer(user).data})
+        return Response({'detail': UserPublicSerializer(user).data})
 
 class UserDetailsAPIView(APIView):
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = UserPrivateGetSerializer(request.user)
+        serializer = UserPrivateSerializer(request.user)
         return Response(serializer.data)
+
+    def patch(self, request):
+        request_serializer = UserPublicSerializer(data=request.data, partial=True)
+        request_serializer.is_valid(raise_exception=True)
+
+        username = request_serializer.validated_data.get('username', None) #pyright: ignore
+        about = request_serializer.validated_data.get('about', None) #pyright: ignore
+
+        try:
+            UpdatePublicUserInfoService.execute({'username': username, 'about': about, 'user': request.user})
+            return Response({'detail': 'User data updated'})
+        except ValueError:
+            return Response({'detail': 'Invalid data provided'}, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request):
         serializer = UserConfirmActionSerializer(data=request.data)
@@ -61,5 +74,4 @@ class UserDetailsAPIView(APIView):
             return Response({'detail': 'You have deleted your account'}) 
         else:
             return Response(data={'detail': 'Incorrect password'}, status=status.HTTP_400_BAD_REQUEST)
-
 

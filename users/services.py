@@ -21,16 +21,21 @@ class ConfirmActionService(Service):
         return False
 
 class UpdatePublicUserInfoService(Service):
-    def process(self):
+    def process(self): #pyright: ignore
         user = self.data.get('user')
         if not user:
             raise ValueError('Invalid user instance')
+
         username = self.data.get('username')
         about = self.data.get('about')
+        if not username and not about:
+            raise ValueError('Data not provided')
+
         if username:
             user.username = username
         if about:
             user.about = about
+
         user.save()
 
 class GetUserByIdService(Service):
