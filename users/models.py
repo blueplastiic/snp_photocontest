@@ -4,6 +4,8 @@ from django.conf import settings
 from django.db.models.signals import post_save 
 from django.dispatch import receiver 
 from rest_framework.authtoken.models import Token
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFit
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password, **other_fields):
@@ -45,9 +47,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150, unique=True)
     about = models.TextField(max_length=500, null=True, blank=True)
+
+    avatar = ProcessedImageField(upload_to='avatars',
+                                 processors=[ResizeToFit(100,100)],
+                                 format='JPEG',
+                                 options = {'quality': 60}, null=True, blank=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+
     objects = CustomUserManager()
     
     USERNAME_FIELD = 'email'
