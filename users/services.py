@@ -81,15 +81,17 @@ class UpdatePublicUserInfoService(Service):
         if not user:
             raise ValueError('User cannot be found')
 
-        username = self.data.get('username')
-        about = self.data.get('about')
-        if not username and not about:
+        username = self.data.get('username', None)
+        about = self.data.get('about', None)
+        avatar = self.data.get('avatar', None)
+        if not username and not about and not avatar:
             raise ValueError('Data not provided')
-
         if username:
             user.username = username
         if about:
             user.about = about
+        if avatar:
+            user.avatar = avatar
 
         user.save()
 

@@ -16,6 +16,7 @@ class UserPrivateSerializer(serializers.Serializer):
     email = serializers.EmailField()
     username = serializers.CharField(max_length=20)
     about = serializers.CharField(max_length=500)
+    avatar = serializers.ImageField()
 
 class UserPublicSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)

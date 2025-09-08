@@ -57,15 +57,15 @@ class UserDetailsAPIView(APIView):
     def patch(self, request):
         request_serializer = UserPublicSerializer(data=request.data, partial=True)
         request_serializer.is_valid(raise_exception=True)
-
-        username = request_serializer.validated_data.get('username', None) #pyright: ignore
-        about = request_serializer.validated_data.get('about', None) #pyright: ignore
+        
+        request_data = request_serializer.validated_data
+        request_data['user'] = request.user #pyright: ignore
 
         try:
-            UpdatePublicUserInfoService.execute({'username': username, 'about': about, 'user': request.user})
+            UpdatePublicUserInfoService.execute(request_data)
             return Response({'detail': 'User data updated'})
-        except ValueError:
-            return Response({'detail': 'Invalid data provided'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request):
         serializer = UserConfirmActionSerializer(data=request.data)
