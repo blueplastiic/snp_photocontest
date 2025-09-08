@@ -21,6 +21,7 @@ class UserPublicSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(max_length=20)
     about = serializers.CharField(max_length=500)
+    avatar = serializers.ImageField(required=False)
 
 class UserConfirmActionSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=30)
