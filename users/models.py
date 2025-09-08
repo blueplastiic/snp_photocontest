@@ -51,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = ProcessedImageField(upload_to='avatars',
                                  processors=[ResizeToFit(100,100)],
                                  format='JPEG',
-                                 options = {'quality': 60}, null=True, blank=True)
+                                 options = {'quality': 80}, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

@@ -16,8 +16,9 @@ class RegisterUserService(Service):
         username = self.data['username']
         password = self.data['password']
         about = self.data.get('about', '')
+        avatar = self.data.get('avatar', None)
 
-        new_user = User.objects.create_user(email=email, username=username, password=password, about=about) #pyright: ignore
+        new_user = User.objects.create_user(email=email, username=username, password=password, about=about, avatar=avatar) #pyright: ignore
         return new_user 
 
 class GetUserTokenService(Service): 
