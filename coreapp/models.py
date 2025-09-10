@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
-from .statuses import PhotoStatus
+from utils.statuses import PhotoStatus
 
 
 class Photo(models.Model):
