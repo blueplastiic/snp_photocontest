@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'imagekit',
     'users',
     'coreapp',
-    'service_objects',
     'rest_framework',
     'rest_framework.authtoken',
 ]
