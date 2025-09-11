@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'coreapp',
     'rest_framework',
     'rest_framework.authtoken',
+    'service_objects',
 ]
 
 MIDDLEWARE = [

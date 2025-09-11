@@ -73,6 +73,29 @@ async-dramatiq = ["django-dramatiq (>=0.4.0)"]
 async-rq = ["django-rq (>=0.6.0)"]
 
 [[package]]
+name = "django-service-objects"
+version = "0.7.0"
+description = "Service objects for Django"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = []
+develop = false
+
+[package.dependencies]
+Django = ">=1.11"
+six = "*"
+
+[package.extras]
+celery = ["celery"]
+
+[package.source]
+type = "git"
+url = "https://git.snpdev.ru/saltpepper/django-service-objects.git"
+reference = "HEAD"
+resolved_reference = "08c09c5ae958cc278b7c0e29ec52ac52869326ea"
+
+[[package]]
 name = "django-stubs"
 version = "5.2.2"
 description = "Mypy stubs for Django"
@@ -287,6 +310,18 @@ files = [
 ]
 
 [[package]]
+name = "six"
+version = "1.17.0"
+description = "Python 2 and 3 compatibility utilities"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+groups = ["main"]
+files = [
+    {file = "six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"},
+    {file = "six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"},
+]
+
+[[package]]
 name = "sqlparse"
 version = "0.5.3"
 description = "A non-validating SQL parser."
@@ -342,4 +377,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "75d449ac084685ed1570b7f5f2e867ca9fd7ff41ff5f4982ad30a1f15529afa7"
+content-hash = "fba5f5ed579a0a682f51f667b856b7e2a34a9bf04289f03e77e533f3f3b1fa55"
