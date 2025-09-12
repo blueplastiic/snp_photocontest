@@ -7,6 +7,6 @@ class GetUserByIdService(Service):
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            raise ValueError('Invalid id,user not found') #not sure about that one
+            raise ValueError('Invalid id,user not found')
         return user
 

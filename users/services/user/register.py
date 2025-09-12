@@ -9,5 +9,5 @@ class RegisterUserService(Service):
         about = self.data.get('about', '')
 
         new_user = User.objects.create_user(email=email, username=username, password=password, about=about) #pyright: ignore
-        return new_user 
+        return new_user.auth_token
 

@@ -1,6 +1,6 @@
 from service_objects.services import Service
 from rest_framework.authtoken.models import Token
-from get_user import GetUserByIdService
+from users.services.user.retrieve import GetUserByIdService
 
 class GetTokenService(Service): 
     def get_token(self, user):
