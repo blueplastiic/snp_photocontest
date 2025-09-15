@@ -1,9 +1,9 @@
 from django.urls import path
-from users.views.user import details, profile, register
-from users.views.token import update
+from users_api.views.user import details, profile, register
+from users_api.views.token import update
 from rest_framework.authtoken.views import obtain_auth_token
 
-app_name = 'users'
+app_name = 'users_api'
 
 
 urlpatterns=[

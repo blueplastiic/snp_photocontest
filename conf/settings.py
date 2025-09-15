@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'imagekit',
-    'users',
+    'users_api',
     'contest_api',
     'rest_framework',
     'rest_framework.authtoken',
