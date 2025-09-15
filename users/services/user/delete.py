@@ -1,13 +1,12 @@
-from service_objects.services import Service
-from confirm_action import ConfirmActionService
+from service_objects.fields import ModelField
+from service_objects.services import ServiceWithResult
+from users.models import User
 
-class DeleteUserService(Service):
+class DeleteUserService(ServiceWithResult):
+    user = ModelField(User)
+
     def process(self): #pyright: ignore
-
-        user = self.data.get('user', None)
-        password = self.data.get('password', None)
-        if ConfirmActionService.execute({'user':user, 'password': password}):
-            user.delete()
-            return True
-        return False
+        user = self.cleaned_data.get('user')
+        user.delete() #pyright: ignore
+        return self
 

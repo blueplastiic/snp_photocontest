@@ -1,20 +1,31 @@
-from service_objects.services import Service
+from django import forms
+from service_objects.services import ServiceWithResult
+from service_objects.fields import ModelField
+from service_objects.errors import ValidationError
+from users.models import User
 
-class UpdatePublicUserInfoService(Service):
+class UpdatePublicInfoService(ServiceWithResult):
+    user = ModelField(User)
+    username = forms.CharField(max_length=30, required=False)
+    about = forms.CharField(max_length=500, required=False)
+
     def process(self): #pyright: ignore
-        user = self.data.get('user')
-        if not user:
-            raise ValueError('User cannot be found')
+        user = self.cleaned_data.get('user')
 
-        username = self.data.get('username')
-        about = self.data.get('about')
-        if not username and not about:
-            raise ValueError('Data not provided')
+        username = self.cleaned_data.get('username')
+        about = self.cleaned_data.get('about')
+
+        if not username and not about: 
+            raise ValidationError('Data not provided')
 
         if username:
-            user.username = username
+            if User.objects.filter(username=username).exclude(id=user.id).exists(): #pyright: ignore
+                raise ValidationError('This username is already taken')
+            user.username = username #pyright: ignore
         if about:
-            user.about = about
+            user.about = about #pyright:ignore
 
-        user.save()
+        user.save() #pyright:ignore
+        self.result = user
+        return self
 

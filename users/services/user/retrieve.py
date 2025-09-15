@@ -1,12 +1,20 @@
-from service_objects.services import Service
+from service_objects.errors import NotFound
+from service_objects.services import ServiceWithResult
+from service_objects.errors import NotFound
 from users.models import User
+from django import forms
 
-class GetUserByIdService(Service):
+class GetUserByIdService(ServiceWithResult):
+    id = forms.IntegerField()
+
     def process(self): #pyright: ignore
-        user_id = self.data['user_id']
+        id = self.cleaned_data.get('id')
+
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(id=id)
         except User.DoesNotExist:
-            raise ValueError('Invalid id,user not found')
-        return user
+            raise NotFound(additional_info='User does not exist')
+
+        self.result = user
+        return self
 

@@ -1,17 +1,17 @@
-from service_objects.services import Service
-from delete import DeleteTokenService 
-from create import CreateTokenService
+from service_objects.services import ServiceWithResult
+from service_objects.fields import ModelField
+from users.models import User
+from rest_framework.authtoken.models import Token
 
-class UpdateTokenService(Service):
+class UpdateTokenService(ServiceWithResult):
+    user = ModelField(User)
+    
     def process(self): #pyright: ignore
-        user = self.data.get('user', None)
-        if not user:
-            raise ValueError('User cannot be found')
-        DeleteTokenService.execute({'user': user})
-        new_token = CreateTokenService.execute({'user': user})
-        response_data = {
-            'id': user.id,
-            'auth_token': new_token.key #pyright: ignore
-                         }
-        return  response_data
+        user = self.cleaned_data.get('user')
+        
+        Token.objects.get(user=user).delete()
+        Token.objects.create(user=user)
+        
+        self.result = user
+        return self
 

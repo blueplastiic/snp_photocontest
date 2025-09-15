@@ -1,10 +1,16 @@
 from rest_framework.views import APIView
 from rest_framework import status
-from users.services.user.register import RegisterUserService
+from rest_framework.response import Response
+from users.services.user.create import RegisterUserService
 from users.serializers.token.retrieve import TokenSerializer
+from service_objects.services import ServiceOutcome
 
 class UserRegisterAPIView(APIView):
     def post(self, request):
-        new_user = RegisterUserService.execute(request.data)
-        return Response(TokenSerializer(new_user).data) #pyright: ignore
+        outcome: ServiceOutcome = ServiceOutcome(
+            RegisterUserService, 
+            request.data
+        )
+        
+        return Response(TokenSerializer(outcome.result).data, status=status.HTTP_201_CREATED)
 

@@ -4,15 +4,15 @@ from rest_framework.permissions import IsAuthenticated
 from users.services.token.update import UpdateTokenService
 from users.serializers.token.retrieve import TokenSerializer
 from rest_framework import status
+from service_objects.services import ServiceOutcome
 
 class UpdateTokenAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        try:
-            token = UpdateTokenService.execute(request.data)
-        except ValueError:
-            return Response(data={'error': 'User cannot be found'},status=status.HTTP_404_NOT_FOUND)
-        
-        return Response(TokenSerializer(token).data)
+        outcome: ServiceOutcome = ServiceOutcome(
+            UpdateTokenService,
+            {'user': request.user}
+        )
+        return Response(TokenSerializer(outcome.result).data, status.HTTP_200_OK)
 
