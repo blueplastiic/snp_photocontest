@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'imagekit',
     'users',
-    'coreapp',
+    'contest_api',
     'rest_framework',
     'rest_framework.authtoken',
     'service_objects',
