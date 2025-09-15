@@ -30,22 +30,3 @@ class Photo(models.Model):
     class Meta:
         permissions = [('change_status', 'Can change the status of tasks')]
 
-
-class Vote(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    photo = models.ForeignKey('Photo', on_delete=models.CASCADE)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'photo'], name='unique_vote')
-        ]
-
-class Comment(models.Model):
-    content = models.TextField(max_length=500)
-    publish_date = models.DateTimeField(auto_now_add=True)
-    
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    photo = models.ForeignKey('Photo', on_delete=models.CASCADE, null=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-
-
