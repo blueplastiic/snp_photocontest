@@ -2,9 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from users.services.user.retrieve import GetUserByIdService
+from users_api.services.user.retrieve import GetUserByIdService
 from service_objects.services import ServiceOutcome
-from users.serializers.user.retrieve_public import UserPublicSerializer
+from users_api.serializers.user.retrieve_public import UserPublicSerializer
 
 class UserProfileAPIView(APIView):
     permission_classes = [AllowAny]

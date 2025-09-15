@@ -2,9 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from users.services.user.update_public import UpdatePublicInfoService
-from users.services.user.delete import DeleteUserService
-from users.serializers.user.retrieve_private import UserPrivateSerializer
+from users_api.services.user.update_public import UpdatePublicInfoService
+from users_api.services.user.delete import DeleteUserService
+from users_api.serializers.user.retrieve_private import UserPrivateSerializer
 from service_objects.services import ServiceOutcome
 
 class UserDetailsAPIView(APIView):

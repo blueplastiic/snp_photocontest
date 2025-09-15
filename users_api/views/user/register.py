@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from users.services.user.create import RegisterUserService
-from users.serializers.token.retrieve import TokenSerializer
+from users_api.services.user.create import RegisterUserService
+from users_api.serializers.token.retrieve import TokenSerializer
 from service_objects.services import ServiceOutcome
 
 class UserRegisterAPIView(APIView):

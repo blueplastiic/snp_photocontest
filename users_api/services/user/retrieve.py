@@ -1,13 +1,14 @@
 from service_objects.errors import NotFound
 from service_objects.services import ServiceWithResult
 from service_objects.errors import NotFound
-from users.models import User
+from django.conf import settings
 from django import forms
 
 class GetUserByIdService(ServiceWithResult):
     id = forms.IntegerField()
 
     def process(self): #pyright: ignore
+        User = settings.AUTH_USER_MODEL
         id = self.cleaned_data.get('id')
 
         try:
