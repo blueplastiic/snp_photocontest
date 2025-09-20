@@ -38,11 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'imagekit',
+    'models_app',
     'users_api',
     'contest_api',
     'rest_framework',
     'rest_framework.authtoken',
+    'imagekit',
     'service_objects',
 ]
 
@@ -130,7 +131,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'models_app.user.models.User'
+AUTH_USER_MODEL = 'models_app.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
