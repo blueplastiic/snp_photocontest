@@ -3,7 +3,7 @@ from django.conf import settings
 
 class Vote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    photo = models.ForeignKey('Photo', on_delete=models.CASCADE)
+    photo = models.ForeignKey('Photo', related_name='votes', on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
