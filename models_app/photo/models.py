@@ -13,7 +13,7 @@ class Photo(models.Model):
     pub_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=1,choices=PhotoStatus.STATUS_CHOICES, default=PhotoStatus.PENDING)
 
-    original_version = models.ImageField(upload_to='photos')
+    photo = models.ImageField(upload_to='photos')
 
     feed_version = ImageSpecField(
         source='original_version', 
