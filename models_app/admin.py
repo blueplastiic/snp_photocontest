@@ -1,8 +1,2 @@
-from django.contrib import admin
-from django.contrib import admin
-from . import User, Photo, Vote, Comment
+#needs to be configured before making cool adminka for moderator blin
 
-admin.site.register(User)
-admin.site.register(Photo)
-admin.site.register(Vote)
-admin.site.register(Comment)
