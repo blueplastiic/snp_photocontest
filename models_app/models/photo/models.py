@@ -16,13 +16,13 @@ class Photo(models.Model):
     photo = models.ImageField(upload_to='photos')
 
     feed_version = ImageSpecField(
-        source='original_version', 
+        source='photo', 
         format='JPEG', 
         processors=[ResizeToFit(600,400)],
         options={'quality':75}
                                   )
     thumbnail_version = ImageSpecField(
-        source='original_version',
+        source='photo',
         format='JPEG',
         processors=[ResizeToFit(100,100)],
         options={'quality': 50}

@@ -9,7 +9,7 @@ class PhotoDetailAPIView(APIView):
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             GetPhotoByIdService,
-            **kwargs
+            kwargs
         )
         return Response(PhotoDetailSerializer(outcome.result).data, status=status.HTTP_200_OK)
 

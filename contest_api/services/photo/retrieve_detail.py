@@ -1,7 +1,7 @@
 from service_objects.errors import NotFound
 from service_objects.services import ServiceWithResult
 from django import forms
-from models_app import Photo
+from models_app.models import Photo
 from django.db.models import Count
 
 class GetPhotoByIdService(ServiceWithResult):
@@ -13,6 +13,7 @@ class GetPhotoByIdService(ServiceWithResult):
         try:
             photo = (
                 Photo.objects
+                     .select_related('user')
                      .prefetch_related('comments')
                      .annotate(num_votes=Count('votes'))
                      .get(id=id)

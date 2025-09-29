@@ -1,13 +1,11 @@
 from service_objects.services import ServiceWithResult
 from service_objects.errors import ValidationError
 from service_objects.fields import ModelField
-from models_app import Photo
+from models_app.models import Photo, User
 from django import forms
-from django.conf import settings
 from utils.statuses import PhotoStatus
 
 class CreatePhotoService(ServiceWithResult):
-    User = settings.AUTH_USER_MODEL
     user = ModelField(User)
     title = forms.CharField(max_length=100)
     description = forms.CharField(max_length=300)
@@ -19,9 +17,13 @@ class CreatePhotoService(ServiceWithResult):
         description = self.cleaned_data.get('description')
         photo = self.cleaned_data.get('photo')
 
+        if Photo.objects.filter(title=title).exists():
+            raise ValidationError(additional_info='You already have a photo with this title')
+
         new_photo = Photo.objects.create(user=user,
                                          title=title,
                                          description=description,
+                                         photo=photo,
                                          status=PhotoStatus.PENDING)
         
         return self
