@@ -1,9 +1,8 @@
 from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
-from django.conf import settings
+from models_app.models import User
 
 class DeleteUserService(ServiceWithResult):
-    User = settings.AUTH_USER_MODEL
     user = ModelField(User)
 
     def process(self): #pyright: ignore

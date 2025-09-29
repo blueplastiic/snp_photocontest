@@ -1,7 +1,3 @@
-from django.conf import settings
-from django.db.models.signals import post_save 
-from django.dispatch import receiver 
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import BaseUserManager, Group
 
 class CustomUserManager(BaseUserManager):
@@ -39,9 +35,4 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('is_superuser must be True for superuser')
 
         return self.create_user(email, username, password, **other_fields)
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
 

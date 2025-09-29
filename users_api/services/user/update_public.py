@@ -2,10 +2,9 @@ from django import forms
 from service_objects.services import ServiceWithResult
 from service_objects.fields import ModelField
 from service_objects.errors import ValidationError
-from django.conf import settings
+from models_app.models import User
 
 class UpdatePublicInfoService(ServiceWithResult):
-    User = settings.AUTH_USER_MODEL
     user = ModelField(User)
     username = forms.CharField(max_length=30, required=False)
     about = forms.CharField(max_length=500, required=False)

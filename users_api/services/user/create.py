@@ -1,8 +1,8 @@
 from service_objects.services import ServiceWithResult
 from service_objects.errors import ValidationError
 from django import forms
-from django.conf import settings
 from utils.password import validate_password
+from models_app.models import User
 
 class RegisterUserService(ServiceWithResult):
     email = forms.EmailField()
@@ -11,7 +11,6 @@ class RegisterUserService(ServiceWithResult):
     about = forms.CharField(max_length=500, required=False)
 
     def process(self): #pyright: ignore
-        User = settings.AUTH_USER_MODEL
         email = self.cleaned_data.get('email')
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
