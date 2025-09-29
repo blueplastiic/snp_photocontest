@@ -17,7 +17,7 @@ class CreatePhotoService(ServiceWithResult):
         description = self.cleaned_data.get('description')
         photo = self.cleaned_data.get('photo')
 
-        if Photo.objects.filter(title=title).exists():
+        if Photo.objects.filter(user=user, title=title).exists():
             raise ValidationError(additional_info='You already have a photo with this title')
 
         new_photo = Photo.objects.create(user=user,
