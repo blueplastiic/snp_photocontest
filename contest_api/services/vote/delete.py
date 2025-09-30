@@ -9,7 +9,7 @@ class DeleteVoteService(ServiceWithResult):
     user = ModelField(User)
 
     def process(self): #pyright: ignore
-        photo_id = self.cleaned_data.get('photo_id')
+        photo_id = self.cleaned_data.get('id')
         user = self.cleaned_data.get('user')
 
         try:
