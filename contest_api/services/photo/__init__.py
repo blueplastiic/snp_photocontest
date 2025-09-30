@@ -1,2 +1,2 @@
-from .create import *
-from .retrieve_detail import *
+from .create import CreatePhotoService
+from .retrieve_detail import GetPhotoByIdService
