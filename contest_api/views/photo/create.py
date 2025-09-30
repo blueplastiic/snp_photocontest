@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from contest_api.services.photo import CreatePhotoService
+from contest_api.services import CreatePhotoService
 from service_objects.services import ServiceOutcome
 
 class CreatePhotoAPIView(APIView):
