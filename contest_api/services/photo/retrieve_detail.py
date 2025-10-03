@@ -13,10 +13,10 @@ class GetPhotoByIdService(ServiceWithResult):
         try:
             photo = (
                 Photo.objects
-                     .select_related('user')
-                     .prefetch_related('comments')
-                     .annotate(num_votes=Count('votes'))
-                     .get(id=id)
+                .select_related('user')
+                .prefetch_related('comments')
+                .annotate(num_votes=Count('votes'))
+                .get(id=id)
             )
         except Photo.DoesNotExist:
             raise NotFound(additional_info='Photo does not exist')
