@@ -5,7 +5,7 @@ from service_objects.services import ServiceOutcome
 from contest_api.services import DeleteCommentService
 from contest_api.services.comment.create import CreateCommmentService
 
-class CommentActionsAPIView(APIView):
+class UpdateDeleteCommentAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     #author of the comment can delete it with this method
