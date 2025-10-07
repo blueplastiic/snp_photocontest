@@ -8,17 +8,6 @@ from contest_api.services.comment.create import CreateCommmentService
 class CommentActionsAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    #creating reply to a comment
-    def post(self, request, *args, **kwargs):
-        outcome: ServiceOutcome = ServiceOutcome(
-            CreateCommmentService,
-            {
-                **kwargs, **request.data, 'user': request.user
-            }
-        )
-
-        return Response(outcome.response_status)
-
     #author of the comment can delete it with this method
     def delete(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
@@ -29,4 +18,6 @@ class CommentActionsAPIView(APIView):
         )
         
         return Response(outcome.response_status)
-   
+  
+#TODO: UPDATE
+
