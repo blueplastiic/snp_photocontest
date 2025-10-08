@@ -1,10 +1,13 @@
 from typing import Self, Optional
+from functools import lru_cache
+
 from django.core.exceptions import ObjectDoesNotExist
+from django import forms
 
 from service_objects.services import ServiceWithResult
 from service_objects.errors import NotFound, ValidationError
 from service_objects.fields import ModelField
-from django import forms
+
 from models_app.models import Comment, User, Photo
 
 class DeleteCommentService(ServiceWithResult):
@@ -23,10 +26,12 @@ class DeleteCommentService(ServiceWithResult):
         return self
 
     @property
+    @lru_cache()
     def _user(self) -> User:
         return self.cleaned_data['user']
 
     @property 
+    @lru_cache()
     def _photo(self) -> Optional[Photo]:
         try:
             return Photo.objects.get(
@@ -36,6 +41,7 @@ class DeleteCommentService(ServiceWithResult):
             return None
 
     @property 
+    @lru_cache()
     def _comment(self) -> Optional[Comment]:
         try:
             return Comment.objects.get(

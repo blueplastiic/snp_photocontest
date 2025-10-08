@@ -1,11 +1,13 @@
-from django.core.exceptions import ObjectDoesNotExist
 from typing import Self, Optional
+from functools import lru_cache
+
+from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 
 from service_objects.services import ServiceWithResult
 from service_objects.errors import NotFound
 from service_objects.fields import ModelField
 
-from django import forms
 from models_app.models import Photo, User, Comment
 
 class CreateCommmentService(ServiceWithResult):
@@ -24,10 +26,12 @@ class CreateCommmentService(ServiceWithResult):
         return self
 
     @property
+    @lru_cache()
     def _user(self) -> User:
         return self.cleaned_data['user']
 
-    @property 
+    @property
+    @lru_cache()
     def _photo(self) -> Optional[Photo]:
         try:
             return Photo.objects.get(
@@ -37,6 +41,7 @@ class CreateCommmentService(ServiceWithResult):
             return None
 
     @property
+    @lru_cache()
     def _parent(self) -> Optional[Comment]:
         try:
             return Comment.objects.get(
