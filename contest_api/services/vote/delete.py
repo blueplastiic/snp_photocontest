@@ -1,4 +1,5 @@
 from typing import Self, Optional
+from functools import lru_cache
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -22,10 +23,12 @@ class DeleteVoteService(ServiceWithResult):
         return self
 
     @property
+    @lru_cache()
     def _user(self) -> User:
         return self.cleaned_data['user']
 
     @property
+    @lru_cache()
     def _photo(self) -> Optional[Photo]:
         try:
             return Photo.objects.get(
@@ -35,6 +38,7 @@ class DeleteVoteService(ServiceWithResult):
             return None
 
     @property
+    @lru_cache()
     def _vote(self) -> Optional[Vote]:
         try:
             return Vote.objects.get(
