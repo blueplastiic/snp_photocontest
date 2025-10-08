@@ -2,8 +2,7 @@ from django.urls import path
 from contest_api.views.photo.create import CreatePhotoAPIView
 from contest_api.views.photo.detail import PhotoDetailAPIView
 
-from contest_api.views.vote.create import CreateVoteAPIView
-from contest_api.views.vote.delete import DeleteVoteAPIView
+from contest_api.views.vote.views import CreateVoteAPIView, DeleteVoteAPIView
 
 app_name = 'contest_api'
 
