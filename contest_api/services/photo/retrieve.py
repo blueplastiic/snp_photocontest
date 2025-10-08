@@ -4,7 +4,7 @@ from django import forms
 from models_app.models import Photo
 from django.db.models import Count
 
-class GetPhotoByIdService(ServiceWithResult):
+class RetrievePhotoService(ServiceWithResult):
     id = forms.IntegerField()
 
     def process(self): #pyright: ignore

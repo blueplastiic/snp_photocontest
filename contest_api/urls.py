@@ -1,13 +1,12 @@
 from django.urls import path
-from contest_api.views.photo import detail
-from contest_api.views.photo import create
-from contest_api.views.photo import user_photo_list
+from contest_api.views.photo import views
 
 app_name = 'contest_api'
 
 urlpatterns=[ 
-    path('photo/<int:id>/', detail.PhotoDetailAPIView.as_view(), name='photo_create'),
-    path('photo/create/', create.CreatePhotoAPIView.as_view(), name='photo_detail'),
-    path('photo/list/<int:user_id>', user_photo_list.UserPhotosAPIView.as_view(), name='photo_list_user')
+
+    path('photo/', views.ListCreatePhotoAPIView.as_view(), name='photo_list_create'),
+    path('photo/me/', views.ListCurrentUserPhotoAPIView.as_view(), name='photo_list_current_user'),
+    path('photo/<int:photo_id>/', views.RetrievePhotoAPIView.as_view(), name='photo_retrieve'),
 ]
 

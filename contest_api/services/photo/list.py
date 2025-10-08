@@ -5,7 +5,7 @@ from models_app.models import Photo, User
 from django import forms
 from django.db.models import Count
 
-class GetPhotoList(ServiceWithResult):
+class ListPhotoService(ServiceWithResult):
     user_id = forms.IntegerField(required=False)
 
     def process(self): #pyright: ignore
@@ -27,7 +27,7 @@ class GetPhotoList(ServiceWithResult):
             )
 
         else:
-            photos = Photo.objects.all()
+            photos = Photo.objects.all() #DROP THE BASS(E)
         
         self.result = photos
         return self
