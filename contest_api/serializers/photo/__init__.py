@@ -1,3 +1,4 @@
-from .retrieve_detail import PhotoDetailSerializer
-from .retrieve_list import PhotoListSerializer
+from .retrieve import RetrievePhotoSerializer
+from .list import ListPhotoSerializer
+from .list_current_user import ListCurrentUserPhotoSerializer
 

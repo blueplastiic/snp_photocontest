@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-class PhotoDetailSerializer(serializers.Serializer):
+class ListPhotoSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
     title = serializers.CharField(max_length=100)
     description = serializers.CharField(max_length=300)
     pub_date = serializers.DateField()
@@ -8,7 +9,7 @@ class PhotoDetailSerializer(serializers.Serializer):
     user_id = serializers.IntegerField(source='user.id')
     username = serializers.CharField(source='user.username')
 
-    photo = serializers.ImageField(source='photo')
+    image = serializers.ImageField(source='feed_version')
     num_votes = serializers.IntegerField()
-    #comments
+    num_comments = serializers.IntegerField()
 

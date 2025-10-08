@@ -1,2 +1,2 @@
-from .photo import PhotoDetailSerializer, PhotoListSerializer
+from .photo import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer
 

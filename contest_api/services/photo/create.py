@@ -1,6 +1,11 @@
+from typing import Self
+from functools import lru_cache
+
 from service_objects.services import ServiceWithResult
 from service_objects.errors import ValidationError
 from service_objects.fields import ModelField
+
+
 from models_app.models import Photo, User
 from django import forms
 from utils.statuses import PhotoStatus
@@ -11,20 +16,39 @@ class CreatePhotoService(ServiceWithResult):
     description = forms.CharField(max_length=300)
     photo = forms.ImageField()
 
-    def process(self): #pyright: ignore
-        user = self.cleaned_data.get('user')
-        title = self.cleaned_data.get('title')
-        description = self.cleaned_data.get('description')
-        photo = self.cleaned_data.get('photo')
+    custom_validations = ['name_dup']
 
-        if Photo.objects.filter(user=user, title=title).exists():
-            raise ValidationError(additional_info='You already have a photo with this title')
-
-        new_photo = Photo.objects.create(user=user,
-                                         title=title,
-                                         description=description,
-                                         photo=photo,
-                                         status=PhotoStatus.PENDING)
-        
+    def process(self) -> Self: #pyright: ignore
+        self.run_custom_validations()
+        if self.is_valid():
+            self.create_photo()
         return self
+
+    @property
+    @lru_cache()
+    def _user(self) -> User: 
+        return self.cleaned_data['user']
+
+    def name_dup(self) -> None:
+        photo_exists = Photo.objects.filter(
+            user=self._user,
+            title=self.cleaned_data['title']
+        ).exists()
+
+        if photo_exists:
+            self.add_error(
+                'title',
+                ValidationError(
+                    message=f"You already have a photo with title {self.cleaned_data['title']}"
+                )
+            )
+
+    def create_photo(self) -> None:
+        Photo.objects.create(
+            user=self._user,
+            title=self.cleaned_data['title'],
+            description=self.cleaned_data['description'],
+            photo = self.cleaned_data['photo'],
+            status = PhotoStatus.PENDING
+        )
 

@@ -1,11 +1,10 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
 
 from service_objects.services import ServiceOutcome
 from contest_api.services import CreatePhotoService, ListPhotoService, ListCurrentUserPhotoService, RetrievePhotoService
-from contest_api.serializers import PhotoListSerializer, PhotoDetailSerializer
+from contest_api.serializers import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer
 
 class ListCreatePhotoAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -18,8 +17,10 @@ class ListCreatePhotoAPIView(APIView):
             }
         )
 
-        # to be continued
-        return None
+        return Response(
+            ListPhotoSerializer(outcome.result, many=True).data,
+            status=outcome.response_status
+        )
 
     def post(self, request):
         outcome: ServiceOutcome = ServiceOutcome(
@@ -33,7 +34,7 @@ class ListCreatePhotoAPIView(APIView):
         return Response(status=outcome.response_status)
 
 class ListCurrentUserPhotoAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self,request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
@@ -42,15 +43,19 @@ class ListCurrentUserPhotoAPIView(APIView):
                 'user': request.user
             }
         )
-        # to be continued
-        return None
+
+        return Response(
+            ListCurrentUserPhotoSerializer(outcome.result, many=True).data,
+            status = outcome.response_status
+        )
 
 class RetrievePhotoAPIView(APIView): 
+    permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             RetrievePhotoService,
             kwargs
         )
-        return Response(PhotoDetailSerializer(outcome.result).data, status=outcome.response_status)
+        return Response(RetrievePhotoSerializer(outcome.result).data, status=outcome.response_status)
 #TODO: delete photo (celery)
 
