@@ -16,7 +16,7 @@ class CreateCommmentService(ServiceWithResult):
     parent_id = forms.IntegerField(required=False)
     content = forms.CharField()
 
-    custom_validations = ['photo_presence', 'comment_presence']
+    custom_validations = ['photo_presence', 'parent_presence']
 
     def process(self) -> Self:  #pyright: ignore
         self.run_custom_validations()
