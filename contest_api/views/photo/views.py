@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from service_objects.services import ServiceOutcome
 from contest_api.services import CreatePhotoService, ListPhotoService, ListCurrentUserPhotoService, RetrievePhotoService
@@ -8,6 +9,7 @@ from contest_api.serializers import ListPhotoSerializer, ListCurrentUserPhotoSer
 
 class ListCreatePhotoAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get(self,request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
