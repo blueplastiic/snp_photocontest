@@ -4,15 +4,15 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from service_objects.services import ServiceOutcome
-from users_api.services.user.retrieve import GetUserByIdService
-from users_api.serializers import PublicUserSerializer, PrivateUserSerializer
+from users_api.services.user import CreateUserService, DeleteUserService, RetrieveUserService, UpdatePublicInfoUserService
+from users_api.serializers import PublicUserSerializer, PrivateUserSerializer, RetrieveTokenSerializer
 
 class UserAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
-            GetUserByIdService, 
+            RetrieveUserService, 
             kwargs
         )
 
@@ -26,29 +26,35 @@ class PrivateUserAPIView(APIView):
         return Response(PrivateUserSerializer(request.user).data)
 
     def patch(self, request):
-        # request.data['user'] = request.user
-        # outcome: ServiceOutcome = ServiceOutcome(
-        #     UpdatePublicInfoService,
-        #     request.data
-        # )
-        # return Response(UserPrivateSerializer(outcome.result).data, status.HTTP_200_OK)
-        pass
+        request.data['user'] = request.user
+        outcome: ServiceOutcome = ServiceOutcome(
+            UpdatePublicInfoUserService,
+            request.data
+        )
+        return Response(
+            PrivateUserSerializer(outcome.result).data,
+            status.HTTP_200_OK
+        )
         
     def delete(self, request):
-        # outcome: ServiceOutcome = ServiceOutcome(
-        #     DeleteUserService, 
-        #     {'user':request.user}
-        # )
-        # return Response(status=outcome.response_status) 
-        pass
+        outcome: ServiceOutcome = ServiceOutcome(
+            DeleteUserService, 
+            {'user':request.user}
+        )
 
-class RegisterUserAPIView(APIView):
+        return Response(
+            status=outcome.response_status
+        ) 
+
+class CreateUserAPIView(APIView):
     def post(self, request):
-        # outcome: ServiceOutcome = ServiceOutcome(
-        #     RegisterUserService, 
-        #     request.data
-        # )
-        # 
-        # return Response(TokenSerializer(outcome.result).data, status=status.HTTP_201_CREATED)
-        pass
+        outcome: ServiceOutcome = ServiceOutcome(
+            CreateUserService, 
+            request.data
+        )
+
+        return Response(
+            RetrieveTokenSerializer(outcome.result).data, 
+            status=status.HTTP_201_CREATED
+        )
 

@@ -1,3 +1,3 @@
-from .user import RegisterUserAPIView, UserAPIView, PrivateUserAPIView
+from .user import CreateUserAPIView, UserAPIView, PrivateUserAPIView
 from .token import UpdateTokenAPIView
 
