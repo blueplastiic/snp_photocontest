@@ -17,7 +17,8 @@ class DeleteCommentService(ServiceWithResult):
 
     custom_validations = [
         'photo_presence, comment_presence',
-        'comment_author_check', 'comment_photo_check'
+        'comment_author_check', 'comment_photo_check',
+        'related_comments_presence'
                           ]
     def process(self) -> Self: #pyright: ignore
         self.run_custom_validations()
@@ -40,12 +41,14 @@ class DeleteCommentService(ServiceWithResult):
         except ObjectDoesNotExist:
             return None
 
-    @property 
+    @property
     @lru_cache()
     def _comment(self) -> Optional[Comment]:
         try:
-            return Comment.objects.get(
-                id=self.cleaned_data['comment_id']
+            return (
+                Comment.objects
+                .prefetch_related('children')
+                .get(id=self.cleaned_data['comment_id'])
             )
         except ObjectDoesNotExist:
             return None
@@ -83,6 +86,15 @@ class DeleteCommentService(ServiceWithResult):
                 'photo_id',
                 ValidationError(
                     message=f"Comment {self._comment.id} does not belong to photo {self._photo.id}" #pyright:ignore
+                )
+            )
+
+    def related_comments_presence(self)-> None:
+        if self._comment.children.exists():#pyright:ignore
+            self.add_error(
+                'comment_id',
+                ValidationError(
+                    message=f"Can't update comments with existing replies"
                 )
             )
 
