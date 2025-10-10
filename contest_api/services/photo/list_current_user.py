@@ -15,7 +15,7 @@ class ListCurrentUserPhotoService(ServiceWithResult):
     def process(self) -> Self: #pyright: ignore
         self.run_custom_validations()
         if self.is_valid():
-            self.result = self.cur_user_photo_list()
+            self.result = self.list_cur_user_photo()
         return self
 
     @property
@@ -23,7 +23,7 @@ class ListCurrentUserPhotoService(ServiceWithResult):
     def _user(self) -> User:
         return self.cleaned_data['user']
 
-    def cur_user_photo_list(self) -> QuerySet:
+    def list_cur_user_photo(self) -> QuerySet:
         return (
             Photo.objects
             .annotate(
@@ -32,5 +32,4 @@ class ListCurrentUserPhotoService(ServiceWithResult):
                       )
             .filter(user=self._user)
         )
-        #TODO: pagination, sorts, filters and stuff
 

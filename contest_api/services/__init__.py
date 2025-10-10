@@ -1,2 +1,2 @@
-from .photo import CreatePhotoService, ListPhotoService, ListCurrentUserPhotoService, RetrievePhotoService
+from .photo import CreatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService, RetrievePhotoService
 
