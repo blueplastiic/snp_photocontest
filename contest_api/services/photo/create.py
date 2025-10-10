@@ -10,6 +10,7 @@ from models_app.models import Photo, User
 from django import forms
 from utils.statuses import PhotoStatus
 
+
 class CreatePhotoService(ServiceWithResult):
     user = ModelField(User)
     title = forms.CharField(max_length=100)

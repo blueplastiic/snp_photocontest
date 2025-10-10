@@ -138,5 +138,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'EXCEPTION_HANDLER': 'utils.exception_handler.drf_exception_response',
+    'PAGE_SIZE': 4,
 }
 
