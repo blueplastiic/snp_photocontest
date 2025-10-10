@@ -17,7 +17,6 @@ class ListPhotoService(ServiceWithResult):
     page = forms.IntegerField(required=False)
 
     def process(self) -> Self: #pyright: ignore
-        self.run_custom_validations()
         if self.is_valid():
             self.result = self._paginated_photos
         return self
