@@ -22,7 +22,7 @@ class CreatePhotoService(ServiceWithResult):
     def process(self) -> Self: #pyright: ignore
         self.run_custom_validations()
         if self.is_valid():
-            self.create_photo()
+            self.result = self.create_photo()
         return self
 
     @property
@@ -44,12 +44,13 @@ class CreatePhotoService(ServiceWithResult):
                 )
             )
 
-    def create_photo(self) -> None:
-        Photo.objects.create(
+    def create_photo(self) -> Photo:
+        new_photo = Photo.objects.create(
             user=self._user,
             title=self.cleaned_data['title'],
             description=self.cleaned_data['description'],
             photo = self.cleaned_data['photo'],
             status = PhotoStatus.PENDING
         )
+        return new_photo
 

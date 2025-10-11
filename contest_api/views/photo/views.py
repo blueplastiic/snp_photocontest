@@ -10,7 +10,7 @@ from utils.paginator import CustomPagination
 
 from service_objects.services import ServiceOutcome
 from contest_api.services import CreatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService, RetrievePhotoService
-from contest_api.serializers import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer
+from contest_api.serializers import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer, NewPhotoSerializer
 
 
 class ListCreatePhotoAPIView(APIView):
@@ -45,7 +45,10 @@ class ListCreatePhotoAPIView(APIView):
             request.FILES
         )
         
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(
+            NewPhotoSerializer(outcome.result).data,
+            status=status.HTTP_201_CREATED
+        )
 
 class ListUserPhotoAPIView(APIView):
     permrssion_classes = [AllowAny]
