@@ -16,7 +16,7 @@ class CreateCommmentService(ServiceWithResult):
     parent_id = forms.IntegerField(required=False)
     content = forms.CharField()
 
-    custom_validations = ['photo_presence', 'parent_presence']
+    custom_validations = ['photo_presence', 'comment_presence', 'comment_parent_presence']
 
     def process(self) -> Self:  #pyright: ignore
         self.run_custom_validations()
@@ -59,13 +59,23 @@ class CreateCommmentService(ServiceWithResult):
                 )
             )
 
-    def parent_presence(self) -> None:
+    def comment_presence(self) -> None:
         if self.cleaned_data.get('parent_id'): #checks only if client passed the id
             if not self._parent:
                 self.add_error(
                     "parent_id",
                     NotFound(
                         message=f"Comment {self.cleaned_data['parent_id']} not found"
+                    )
+                )
+
+    def comment_parent_presence(self) -> None:
+        if self.cleaned_data.get('parent_id'):
+            if self._parent.parent: #pyright: ignore
+                self.add_error(
+                    'parent_id',
+                    forms.ValidationError(
+                        message=f"Can't reply to replies"
                     )
                 )
 
