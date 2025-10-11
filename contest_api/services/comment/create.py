@@ -21,7 +21,7 @@ class CreateCommmentService(ServiceWithResult):
     def process(self) -> Self:  #pyright: ignore
         self.run_custom_validations()
         if self.is_valid():
-            self.create_comment()
+            self.result = self.create_comment()
         
         return self
 
@@ -79,8 +79,8 @@ class CreateCommmentService(ServiceWithResult):
                     )
                 )
 
-    def create_comment(self) -> None:
-        Comment.objects.create(
+    def create_comment(self) -> Comment:
+        return Comment.objects.create(
             user=self._user,
             photo=self._photo,
             parent=self._parent,

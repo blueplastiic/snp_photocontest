@@ -1,3 +1,4 @@
+from rest_framework.status import HTTP_201_CREATED
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -5,7 +6,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from service_objects.services import ServiceOutcome
 
 from contest_api.services import CreateCommmentService, DeleteCommentService, ListCommentService
-from contest_api.serializers.comment import ParentCommentSerializer
+from contest_api.serializers.comment import ParentCommentSerializer, NewCommentSerializer
+
 
 class ListCreateCommentAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -16,7 +18,10 @@ class ListCreateCommentAPIView(APIView):
                 **kwargs, **request.data, 'user': request.user
             }
         )
-        return Response(outcome.response_status) #TODO change to 201 and return object
+        return Response(
+            NewCommentSerializer(outcome.result).data,
+            status=status.HTTP_201_CREATED
+        ) 
 
     def get(self, request): 
         outcome: ServiceOutcome = ServiceOutcome(
@@ -41,5 +46,5 @@ class UpdateDeleteCommentAPIView(APIView):
             }
         )
         
-        return Response(outcome.response_status)
+        return Response(status=status.HTTP_200_OK)
   
