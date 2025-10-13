@@ -25,10 +25,12 @@ class ListPhotoService(ServiceWithResult):
     def _photos(self) -> QuerySet[Photo]:
         return (
             Photo.objects
+            .select_related('user')
             .annotate(
                 num_comments=Count('comments'),
                 num_votes=Count('votes')
                       )
+            .filter(status='A')
         )
 
     @property

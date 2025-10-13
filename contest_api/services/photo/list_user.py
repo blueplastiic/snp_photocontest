@@ -51,6 +51,7 @@ class ListUserPhotoService(ServiceWithResult):
     def user_photos(self) -> QuerySet:
         return (
             Photo.objects
+            .select_related('user')
             .annotate(
                 num_comments=Count('comments'),
                 num_votes=Count('votes')
