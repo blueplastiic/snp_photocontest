@@ -10,3 +10,6 @@ class PhotoStatus:
         (APPROVED, 'Approved'),
         (DELETED, 'Deleted'),
     ]
+
+    STATUS_LIST = [PENDING, REJECTED, APPROVED, DELETED]
+

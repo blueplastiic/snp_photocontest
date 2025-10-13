@@ -10,6 +10,7 @@ from service_objects.services import ServiceWithResult
 
 from models_app.models import Photo
 
+
 class RetrievePhotoService(ServiceWithResult):
     photo_id = forms.IntegerField()
 
