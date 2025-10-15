@@ -9,7 +9,7 @@ from django.conf import settings
 from utils.paginator import CustomPagination
 
 from service_objects.services import ServiceOutcome
-from contest_api.services import CreatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService, RetrievePhotoService
+from contest_api.services import CreatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService, RetrievePhotoService, DeletePhotoService
 from contest_api.serializers import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer, NewPhotoSerializer
 
 
@@ -104,8 +104,8 @@ class ListCurrentUserPhotoAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
-class RetrievePhotoAPIView(APIView): 
-    permission_classes = [AllowAny]
+class RetrieveDeletePhotoAPIView(APIView): 
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
@@ -114,6 +114,15 @@ class RetrievePhotoAPIView(APIView):
         )
         return Response(
             RetrievePhotoSerializer(outcome.result).data,
+            status=status.HTTP_200_OK
+        )
+    
+    def delete(self, request, *args, **kwargs):
+        outcome: ServiceOutcome = ServiceOutcome(
+            DeletePhotoService,
+            kwargs
+        )
+        return Response(
             status=status.HTTP_200_OK
         )
 
