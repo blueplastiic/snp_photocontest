@@ -15,10 +15,9 @@ class UserDetailsAPIView(APIView):
         return Response(UserPrivateSerializer(request.user).data)
 
     def patch(self, request):
-        request.data['user'] = request.user
         outcome: ServiceOutcome = ServiceOutcome(
             UpdatePublicInfoService,
-            request.data
+            {**request.data, 'user': request.user}
         )
         return Response(UserPrivateSerializer(outcome.result).data, status.HTTP_200_OK)
         
