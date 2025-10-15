@@ -12,5 +12,4 @@ class RetrievePhotoSerializer(serializers.Serializer):
     image = serializers.ImageField(source='photo')
 
     num_votes = serializers.IntegerField()
-    #comments
 
