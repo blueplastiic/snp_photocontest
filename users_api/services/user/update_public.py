@@ -30,6 +30,16 @@ class UpdatePublicInfoUserService(ServiceWithResult):
     def _user(self) -> User:
         return self.cleaned_data['user']
 
+    def update_username(self) -> None:
+        user = self._user
+        user.username = self.cleaned_data['username']
+        user.save()
+
+    def update_about(self) -> None:
+        user = self._user
+        self.about = self.cleaned_data['about']
+        user.save
+
     def data_provided(self) -> None:
         if not self.cleaned_data and not self.about:
             self.add_error(
@@ -44,14 +54,4 @@ class UpdatePublicInfoUserService(ServiceWithResult):
                     message="Neither username nor about field was provided"
                 )
             )
-
-    def update_username(self) -> None:
-        user = self._user
-        user.username = self.cleaned_data['username']
-        user.save()
-
-    def update_about(self) -> None:
-        user = self._user
-        self.about = self.cleaned_data['about']
-        user.save
 
