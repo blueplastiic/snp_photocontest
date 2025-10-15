@@ -120,7 +120,9 @@ class RetrieveDeletePhotoAPIView(APIView):
     def delete(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             DeletePhotoService,
-            kwargs
+            {
+                **kwargs, 'user': request.user
+            }
         )
         return Response(
             status=status.HTTP_200_OK

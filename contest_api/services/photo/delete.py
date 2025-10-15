@@ -1,7 +1,11 @@
+from datetime import timedelta
 from functools import lru_cache
 from typing import Optional, Self
 
-from django.core.exceptions import ObjectDoesNotExist
+from contest_api.tasks.delete_photo import delete_photo_task
+
+from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django import forms
 
 from service_objects.errors import NotFound
@@ -9,13 +13,14 @@ from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
 from models_app.models import User, Photo
+from utils.statuses import PhotoStatus
 
 
 class DeletePhotoService(ServiceWithResult):
     user = ModelField(User)
     photo_id = forms.IntegerField()
 
-    custom_validations = ['photo_presence']
+    custom_validations = ['photo_presence', 'status_check']
 
     def process(self) -> Self: #pyright: ignore
         self.run_custom_validations()
@@ -39,8 +44,22 @@ class DeletePhotoService(ServiceWithResult):
         except ObjectDoesNotExist:
             return None
 
-    def delete_photo(self):
-        pass
+    def delete_photo(self) -> None:
+        photo = self._photo
+        if photo.status in (PhotoStatus.REJECTED, PhotoStatus.PENDING): #pyright:ignore
+            photo.delete() #pyright:ignore
+            return
+
+        photo.status = PhotoStatus.DELETED #pyright:ignore
+        photo.save() #pyright: ignore
+
+        photo_id = self.cleaned_data['photo_id']
+
+        execute_time = timezone.now() + timedelta(minutes=1) #days=1
+        delete_photo_task.apply_async(  #pyright: ignore
+            args=[photo_id],
+            eta=execute_time
+        )
 
     def photo_presence(self) -> None:
         if not self._photo:
@@ -48,6 +67,14 @@ class DeletePhotoService(ServiceWithResult):
                 'photo_id',
                 NotFound(
                     message=f"Photo {self.cleaned_data['photo_id']} not found"
+                )
+            )
+    def status_check(self) -> None:
+        if self._photo.status == PhotoStatus.DELETED: #pyright:ignore
+            self.add_error(
+                'photo_id',
+                ValidationError(
+                    message=f"Photo {self.cleaned_data['photo_id']} deletion is already scheduled"
                 )
             )
 
