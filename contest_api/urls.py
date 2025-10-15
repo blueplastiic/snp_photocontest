@@ -1,11 +1,15 @@
 from django.urls import path
 
+from contest_api.views.vote.views import CreateVoteAPIView, DeleteVoteAPIView
 from contest_api.views.comment.views import ListCreateCommentAPIView, UpdateDeleteCommentAPIView
 from contest_api.views.photo.views import ListCreatePhotoAPIView, ListCurrentUserPhotoAPIView, ListUserPhotoAPIView, RetrievePhotoAPIView
 
 app_name = 'contest_api'
 
 urlpatterns=[ 
+
+    path('vote/', CreateVoteAPIView.as_view(), name='vote_create'),
+    path('vote/<int:photo_id>/', DeleteVoteAPIView.as_view(), name='vote_delete'),
 
     path('comment/', ListCreateCommentAPIView.as_view(), name='comment_create'),
     path('comment/<int:comment_id>', UpdateDeleteCommentAPIView.as_view(), name='comment_actions'),
