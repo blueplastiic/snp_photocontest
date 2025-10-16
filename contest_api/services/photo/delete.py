@@ -53,11 +53,9 @@ class DeletePhotoService(ServiceWithResult):
         photo.status = PhotoStatus.DELETED #pyright:ignore
         photo.save() #pyright: ignore
 
-        photo_id = self.cleaned_data['photo_id']
-
         execute_time = timezone.now() + timedelta(minutes=1) #days=1
         delete_photo_task.apply_async(  #pyright: ignore
-            args=[photo_id],
+            args=[self.cleaned_data['photo_id']],
             eta=execute_time
         )
 
