@@ -67,6 +67,7 @@ class DeletePhotoService(ServiceWithResult):
                     message=f"Photo {self.cleaned_data['photo_id']} not found"
                 )
             )
+
     def status_check(self) -> None:
         if self._photo.status == PhotoStatus.DELETED: #pyright:ignore
             self.add_error(

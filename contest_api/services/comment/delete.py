@@ -8,7 +8,7 @@ from service_objects.services import ServiceWithResult
 from service_objects.errors import NotFound, ValidationError
 from service_objects.fields import ModelField
 
-from models_app.models import Comment, User, Photo
+from models_app.models import Comment, User
 
 class DeleteCommentService(ServiceWithResult):
     photo_id = forms.IntegerField()
@@ -16,8 +16,7 @@ class DeleteCommentService(ServiceWithResult):
     user = ModelField(User)
 
     custom_validations = [
-        'photo_presence, comment_presence',
-        'comment_author_check', 'comment_photo_check',
+        'comment_presence','comment_author_check', 
         'related_comments_presence'
                           ]
     def process(self) -> Self: #pyright: ignore
@@ -31,16 +30,6 @@ class DeleteCommentService(ServiceWithResult):
     def _user(self) -> User:
         return self.cleaned_data['user']
 
-    @property 
-    @lru_cache()
-    def _photo(self) -> Optional[Photo]:
-        try:
-            return Photo.objects.get(
-                id=self.cleaned_data['photo_id']
-            )
-        except ObjectDoesNotExist:
-            return None
-
     @property
     @lru_cache()
     def _comment(self) -> Optional[Comment]:
@@ -53,14 +42,8 @@ class DeleteCommentService(ServiceWithResult):
         except ObjectDoesNotExist:
             return None
 
-    def photo_presence(self) -> None:
-        if not self._photo:
-            self.add_error(
-                'photo_id',
-                NotFound(
-                    message=f"Photo {self.cleaned_data['photo_id']} not found"
-                )
-            )
+    def delete_comment(self) -> None:
+        self._comment.delete() #pyright: ignore 
 
     def comment_presence(self) -> None:
         if not self._comment:
@@ -80,15 +63,6 @@ class DeleteCommentService(ServiceWithResult):
                 )
             )
 
-    def comment_photo_check(self) -> None:
-        if self._comment.photo_id != self._photo.id: #pyright: ignore
-            self.add_error(
-                'photo_id',
-                ValidationError(
-                    message=f"Comment {self._comment.id} does not belong to photo {self._photo.id}" #pyright:ignore
-                )
-            )
-
     def related_comments_presence(self)-> None:
         if self._comment.children.exists():#pyright:ignore
             self.add_error(
@@ -98,6 +72,4 @@ class DeleteCommentService(ServiceWithResult):
                 )
             )
 
-    def delete_comment(self) -> None:
-        self._comment.delete() #pyright: ignore
 
