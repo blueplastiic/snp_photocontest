@@ -40,6 +40,11 @@ class UpdateCommentService(ServiceWithResult):
         except ObjectDoesNotExist:
             return None
 
+    def update_comment(self)->None:
+        comment = self._comment
+        comment.content = self.cleaned_data['content'] #pyright: ignore
+        comment.save() #pyright: ignore
+
     def comment_presence(self) -> None:
         if not self._comment:
             self.add_error(
@@ -57,9 +62,4 @@ class UpdateCommentService(ServiceWithResult):
                     message=f"Can't update comments with existing replies"
                 )
             )
-
-    def update_comment(self)->None:
-        comment = self._comment
-        comment.content = self.cleaned_data['content'] #pyright: ignore
-        comment.save() #pyright: ignore
 

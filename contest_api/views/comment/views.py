@@ -1,11 +1,10 @@
-from rest_framework.status import HTTP_201_CREATED
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from service_objects.services import ServiceOutcome
 
-from contest_api.services import CreateCommmentService, DeleteCommentService, ListCommentService
+from contest_api.services import CreateCommmentService, DeleteCommentService, ListCommentService, UpdateCommentService
 from contest_api.serializers.comment import ParentCommentSerializer, NewCommentSerializer
 
 
@@ -47,4 +46,14 @@ class UpdateDeleteCommentAPIView(APIView):
         )
         
         return Response(status=status.HTTP_200_OK)
-  
+
+    def update(self, request):
+        outcome: ServiceOutcome = ServiceOutcome(
+            UpdateCommentService,
+            {
+                **request.data, 'user': request.user
+            }
+        )
+
+        return Response(status=status.HTTP_200_OK)
+
