@@ -25,13 +25,20 @@ class ListCommentService(ServiceWithResult):
     @lru_cache()
     def _photo(self) -> Optional[Photo]:
         try:
-            return Photo.objects.get(id=self.cleaned_data['photo_id'])
+            return (
+                Photo.objects
+                .get(id=self.cleaned_data['photo_id'])
+                    )
         except ObjectDoesNotExist:
             return None
    
     @property
     def _comments(self) -> QuerySet[Comment]:
-        return Comment.objects.prefetch_related('user', Prefetch('children__user')).filter(photo=self._photo)
+        return (
+            Comment.objects
+            .prefetch_related('user', Prefetch('children__user'))
+            .filter(photo=self._photo)
+        )
 
     def photo_presence(self) -> None:
         if not self._photo:

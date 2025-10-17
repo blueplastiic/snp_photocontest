@@ -10,6 +10,7 @@ from service_objects.fields import ModelField
 
 from models_app.models import Comment, User
 
+
 class DeleteCommentService(ServiceWithResult):
     photo_id = forms.IntegerField()
     comment_id = forms.IntegerField()
@@ -71,5 +72,4 @@ class DeleteCommentService(ServiceWithResult):
                     message=f"Can't update comments with existing replies"
                 )
             )
-
 

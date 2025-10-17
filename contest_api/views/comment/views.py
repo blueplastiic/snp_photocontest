@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 
 from service_objects.services import ServiceOutcome
 
-from contest_api.services import CreateCommmentService, DeleteCommentService, ListCommentService, UpdateCommentService
+from contest_api.services.comment import CreateCommmentService, DeleteCommentService, ListCommentService, UpdateCommentService
 from contest_api.serializers.comment import ParentCommentSerializer, NewCommentSerializer
 
 

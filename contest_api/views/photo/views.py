@@ -9,8 +9,8 @@ from django.conf import settings
 from utils.paginator import CustomPagination
 
 from service_objects.services import ServiceOutcome
-from contest_api.services import CreatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService, RetrievePhotoService, DeletePhotoService
-from contest_api.serializers import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer, NewPhotoSerializer
+from contest_api.services.photo import CreatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService, RetrievePhotoService, DeletePhotoService
+from contest_api.serializers.photo import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer, NewPhotoSerializer
 
 
 class ListCreatePhotoAPIView(APIView):

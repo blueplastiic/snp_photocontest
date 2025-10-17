@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from models_app.models import User, Comment
 
+
 class UpdateCommentService(ServiceWithResult):
     user = ModelField(User)
     comment_id = forms.IntegerField()

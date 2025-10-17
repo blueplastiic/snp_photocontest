@@ -10,6 +10,7 @@ from service_objects.errors import NotFound, ValidationError
 from models_app.models import Photo, User, Vote
 from django import forms
 
+
 class CreateVoteService(ServiceWithResult):
     photo_id = forms.IntegerField()
     user = ModelField(User)
@@ -37,6 +38,12 @@ class CreateVoteService(ServiceWithResult):
         except ObjectDoesNotExist:
             return None
 
+    def create_vote(self) -> None:
+        Vote.objects.create(
+            user=self.cleaned_data['user'],
+            photo=self._photo
+        )
+
     def photo_presence(self) -> None:
         if not self._photo:
             self.add_error(
@@ -59,10 +66,4 @@ class CreateVoteService(ServiceWithResult):
                     message=f"User {self._user.id} has already voted for photo {self._photo.id}" #pyright: ignore
                 )
             )
-
-    def create_vote(self) -> None:
-        Vote.objects.create(
-            user=self.cleaned_data['user'],
-            photo=self._photo
-        )
 

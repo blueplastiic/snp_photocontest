@@ -50,6 +50,14 @@ class CreateCommmentService(ServiceWithResult):
         except ObjectDoesNotExist:
             return None
 
+    def create_comment(self) -> Comment:
+        return Comment.objects.create(
+            user=self._user,
+            photo=self._photo,
+            parent=self._parent,
+            content=self.cleaned_data.get('content')
+        )
+
     def photo_presence(self) -> None:
         if not self._photo:
             self.add_error(
@@ -60,30 +68,20 @@ class CreateCommmentService(ServiceWithResult):
             )
 
     def comment_presence(self) -> None:
-        if self.cleaned_data.get('parent_id'): #checks only if client passed the id
-            if not self._parent:
-                self.add_error(
-                    "parent_id",
-                    NotFound(
-                        message=f"Comment {self.cleaned_data['parent_id']} not found"
-                    )
+        if self.cleaned_data.get('parent_id') and not self._parent: 
+            self.add_error(
+                "parent_id",
+                NotFound(
+                    message=f"Comment {self.cleaned_data['parent_id']} not found"
                 )
+            )
 
     def comment_parent_presence(self) -> None:
-        if self.cleaned_data.get('parent_id'):
-            if self._parent.parent: #pyright: ignore
-                self.add_error(
-                    'parent_id',
-                    forms.ValidationError(
-                        message=f"Can't reply to replies"
-                    )
+        if self.cleaned_data.get('parent_id') and self._parent.parent: #pyright:ignore
+            self.add_error( #pyright:ignore
+                'parent_id',
+                forms.ValidationError(
+                    message=f"Can't reply to replies"
                 )
-
-    def create_comment(self) -> Comment:
-        return Comment.objects.create(
-            user=self._user,
-            photo=self._photo,
-            parent=self._parent,
-            content=self.cleaned_data.get('content')
-        )
+            )
 

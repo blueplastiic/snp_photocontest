@@ -10,6 +10,7 @@ from service_objects.errors import NotFound
 from models_app.models import Vote, Photo, User
 from django import forms
 
+
 class DeleteVoteService(ServiceWithResult):
     photo_id = forms.IntegerField()
     user = ModelField(User)
@@ -47,6 +48,9 @@ class DeleteVoteService(ServiceWithResult):
             )
         except ObjectDoesNotExist:
             return None
+
+    def delete_vote(self) -> None:
+        self._vote.delete() #pyright: ignore
         
     def photo_presence(self) -> None:
         if not self._photo:
@@ -65,7 +69,4 @@ class DeleteVoteService(ServiceWithResult):
                     message=f"Vote from user {self._user.id} for photo {self._photo.id} not found" #pyright: ignore
                 )
             )
-
-    def delete_vote(self) -> None:
-        self._vote.delete() #pyright: ignore
 

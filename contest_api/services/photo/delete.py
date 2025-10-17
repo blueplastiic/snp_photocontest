@@ -37,9 +37,10 @@ class DeletePhotoService(ServiceWithResult):
     @lru_cache()
     def _photo(self) -> Optional[Photo]:
         try:
-            return (Photo.objects
-                    .get(id= self.cleaned_data['photo_id'], user=self._user)
-                    )
+            return (
+                Photo.objects
+                .get(id= self.cleaned_data['photo_id'], user=self._user)
+            )
 
         except ObjectDoesNotExist:
             return None
