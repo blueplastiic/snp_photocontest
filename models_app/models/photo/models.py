@@ -30,3 +30,9 @@ class Photo(models.Model):
     class Meta:
         permissions = [('change_status', 'Can change the status of tasks')]
 
+
+class PhotoHistory(models.Model):
+
+    model = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    old_photo = models.ImageField(upload_to='photo_updates') 
+
