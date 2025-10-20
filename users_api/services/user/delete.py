@@ -3,6 +3,7 @@ from service_objects.services import ServiceWithResult
 
 from models_app.models import User
 
+
 class DeleteUserService(ServiceWithResult):
     user = ModelField(User)
 
