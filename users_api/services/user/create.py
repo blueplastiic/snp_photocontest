@@ -8,6 +8,7 @@ from django import forms
 from utils.password import validate_password
 from models_app.models import User
 
+
 class CreateUserService(ServiceWithResult):
     email = forms.EmailField()
     username = forms.CharField(max_length=20)

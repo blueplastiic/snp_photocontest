@@ -8,6 +8,7 @@ from models_app.models import User
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 
+
 class RetrieveUserService(ServiceWithResult):
     user_id = forms.IntegerField()
 
