@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'imagekit',
     'service_objects',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -137,8 +138,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
     'EXCEPTION_HANDLER': 'utils.exception_handler.drf_exception_response',
+
     'PAGE_SIZE': 4,
+
+
 }
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
