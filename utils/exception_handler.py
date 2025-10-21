@@ -1,5 +1,7 @@
 import sys
 import traceback
+import types
+
 from typing import Union
 
 from django.conf import settings
@@ -175,6 +177,17 @@ def drf_exception_response(
     :param exception:
     :param context:
     """
+    traceback = sys.exc_info()[2]
+    back_frame = traceback.tb_frame.f_back
+
+    back_tb = types.TracebackType(tb_next=None,
+                                  tb_frame=back_frame,
+                                  tb_lasti=back_frame.f_lasti,
+                                  tb_lineno=back_frame.f_lineno)
+    import pdb
+    pdb.set_trace()
+
+    #raise AssertionError().with_traceback(back_tb)
     exception = custom_exception_handler(exception)
     extend_exception_for_response(exception)
 

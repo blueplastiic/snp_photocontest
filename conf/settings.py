@@ -15,7 +15,12 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "static/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "photos")
+MEDIA_URL = "/photos/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -126,7 +131,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -149,4 +153,27 @@ REST_FRAMEWORK = {
 }
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
+
+
+SWAGGER_SETTINGS = {
+    "DOC_EXPANSION": "list",
+    "SHOW_EXTENSIONS": True,
+    "USE_SESSION_AUTH": False,
+    "TAGS_SORTER": "alpha",
+    "OPERATIONS_SORTER": "method",
+    "DEFAULT_MODEL_RENDERING": "example",
+    "SECURITY_DEFINITIONS": {},
+}
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "REST API",
+    "DESCRIPTION": "API endpoints",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "displayOperationId": False,
+        "displayRequestDuration": True,
+    },
+}
 
