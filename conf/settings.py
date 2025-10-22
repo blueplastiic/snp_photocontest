@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+from decouple import config
 from pathlib import Path
 import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -142,4 +143,63 @@ REST_FRAMEWORK = {
 }
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
+
+DJANGO_LOG_LEVEL = config('DJANGO_LOG_LEVEL', default='INFO')
+DB_LOG_LEVEL = config('DB_LOG_LEVEL', default='INFO')
+CELERY_LOG_LEVEL = config('CELERY_LOG_LEVEL', default='INFO')
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {name} {module} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+        },
+        "file":
+            {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs.log"),
+        },
+    },
+
+    "loggers": {
+        "django.request": {
+            "handlers": ["console","file"],
+            "level": DJANGO_LOG_LEVEL,
+            "propagate": False,
+        },
+
+        "django.server": {
+            "handlers": ["console", "file"],
+            "level": DJANGO_LOG_LEVEL,
+            "propagate": False,
+        },
+
+        "django.db.backends": {
+            "level": DB_LOG_LEVEL,
+            "handlers": ["console", "file"],
+            "propagate": False,
+        },
+
+        "celery":{
+            "level": CELERY_LOG_LEVEL,
+            "handlers": ["console", "file"],
+            "propagate": False,
+        }
+    },
+}
 

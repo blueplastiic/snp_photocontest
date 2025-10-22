@@ -15,6 +15,7 @@ dependencies = [
     "pillow (>=11.3.0,<12.0.0)",
     "django-imagekit (>=5.0.0,<6.0.0)",
     "django-service-objects @ git+https://git.snpdev.ru/saltpepper/django-service-objects.git",
+    "python-decouple (>=3.8,<4.0)",
 ]
 
 
