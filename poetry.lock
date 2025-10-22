@@ -249,6 +249,21 @@ async-dramatiq = ["django-dramatiq (>=0.4.0)"]
 async-rq = ["django-rq (>=0.6.0)"]
 
 [[package]]
+name = "django-log-request-id"
+version = "2.1.0"
+description = "Django middleware and log filter to attach a unique ID to every log message generated as part of a request"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "django-log-request-id-2.1.0.tar.gz", hash = "sha256:b11fc821774b54b820ef2e732dbaa52304711de8d5c4f9031ca48578f6121ab6"},
+    {file = "django_log_request_id-2.1.0-py3-none-any.whl", hash = "sha256:c0793c030cfe9f673eff3f89667711f65c39509c016d85e436f9d48507ee778c"},
+]
+
+[package.dependencies]
+django = ">=1.8"
+
+[[package]]
 name = "django-service-objects"
 version = "0.7.0"
 description = "Service objects for Django"
@@ -1022,4 +1037,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "f7c1b65a28d83c9492d55cadb76d12cee5ed65ab4161d6bac99792546360efd6"
+content-hash = "0be48bb800f9e87ca630e95a947215ace0412d4b2819398b66271c52d9b78c82"

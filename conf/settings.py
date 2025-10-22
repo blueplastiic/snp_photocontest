@@ -19,8 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "static/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "photos")
-MEDIA_URL = "/photos/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "log_request_id.middleware.RequestIDMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -176,4 +177,87 @@ SPECTACULAR_SETTINGS = {
         "displayRequestDuration": True,
     },
 }
+from conf.settings.celery import CELERY_LOG_LEVEL
+from conf.settings.django import BASE_DIR, env
 
+LOG_LEVEL = env.str("LOG_LEVEL", default="INFO")
+
+DEBUG_LOGGING = env.bool("DEBUG_LOGGING", default=False)
+
+if DEBUG_LOGGING:
+    ERROR_LOG_FILE_PATH = env.str(
+        "ERROR_LOG_FILE_PATH",
+        default=os.path.join(BASE_DIR, "logs", "error.log"),
+    )
+    CELERY_LOG_PATH = os.path.join(
+        BASE_DIR, env.str("CELERY_LOG_PATH", default="logs/celery.log")
+    )
+    if not os.path.exists(os.path.join(BASE_DIR, "logs")):
+        Path(os.path.join(BASE_DIR, "logs")).mkdir(parents=True, exist_ok=True)
+
+    if not os.path.exists(ERROR_LOG_FILE_PATH):
+        Path(os.path.join(BASE_DIR, ERROR_LOG_FILE_PATH)).touch(exist_ok=True)
+
+    if not os.path.exists(CELERY_LOG_PATH):
+        Path(os.path.join(BASE_DIR, CELERY_LOG_PATH)).touch(exist_ok=True)
+
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {
+                "format": "%(levelname)-8s [%(asctime)s] %(levelname)s [%(request_id)s]: %(message)s"
+            },
+            "celery": {
+                "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+                "datefmt": "%Y/%m/%d %H:%M:%S",
+            },
+        },
+        "filters": {"request_id": {"()": "log_request_id.filters.RequestIDFilter"}},
+        "handlers": {
+            "console": {
+                "filters": [
+                    "request_id",
+                ],
+                "class": "rich.logging.RichHandler",
+                "formatter": "standard",
+                "level": "DEBUG",
+            },
+            "error_file": {
+                "filters": [
+                    "request_id",
+                ],
+                "class": "logging.FileHandler",
+                "formatter": "standard",
+                "level": "DEBUG",
+                "filename": ERROR_LOG_FILE_PATH,
+            },
+            "celery": {
+                "level": CELERY_LOG_LEVEL,
+                "class": "logging.FileHandler",
+                "filename": CELERY_LOG_PATH,
+                "formatter": "celery",
+            },
+        },
+        "loggers": {
+            "django": {
+                "handlers": ["console"],
+                "level": "INFO",
+            },
+            "django.db.backends": {
+                "level": "DEBUG",
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "error": {
+                "level": "DEBUG",
+                "handlers": ["error_file"],
+                "propagate": True,
+            },
+            "celery": {
+                "handlers": ["celery"],
+                "level": CELERY_LOG_LEVEL,
+                "propagate": True,
+            },
+        },
+    }

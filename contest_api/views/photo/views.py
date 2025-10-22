@@ -8,15 +8,18 @@ from django.conf import settings
 
 from utils.paginator import CustomPagination
 
+from drf_spectacular.utils import extend_schema
+
 from service_objects.services import ServiceOutcome
 from contest_api.services.photo import CreatePhotoService, RetrievePhotoService, DeletePhotoService, UpdatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService
 from contest_api.serializers.photo import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer, NewPhotoSerializer
-
+from contest_api.docs.photo import *
 
 class ListCreatePhotoAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
-
+    
+    @extend_schema(**photos_list_docs)
     def get(self,request):
         outcome: ServiceOutcome = ServiceOutcome(ListPhotoService, request.query_params) 
 
@@ -53,6 +56,7 @@ class ListCreatePhotoAPIView(APIView):
 class ListUserPhotoAPIView(APIView):
     permrssion_classes = [AllowAny]
 
+    @extend_schema(**user_photos_list_docs)
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             ListUserPhotoService,
@@ -81,6 +85,7 @@ class ListUserPhotoAPIView(APIView):
 class ListCurrentUserPhotoAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(**current_user_photos_list_docs)
     def get(self,request):
         outcome: ServiceOutcome = ServiceOutcome(
             ListCurrentUserPhotoService,
@@ -108,6 +113,7 @@ class RetrieveUpdateDeletePhotoAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
 
+    @extend_schema(**photo_retrieve_docs)
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             RetrievePhotoService,
