@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 
 from conf import settings
 
-
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
 
@@ -29,6 +29,10 @@ urlpatterns = [
     path('contest_api/', include('contest_api.urls')),
 ]
 
+urlpatterns+=[
+    path('docs/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('docs/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui')
+]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
