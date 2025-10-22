@@ -12,7 +12,7 @@ urlpatterns=[
     path('register/', CreateUserAPIView.as_view(), name='user_register'),
     path('login/', obtain_auth_token, name='user_login'),
 
-    path('<int:id>/', RetrieveUserAPIView.as_view(), name='user_profile'),
+    path('user/<int:id>/', RetrieveUserAPIView.as_view(), name='user_profile'),
 
     path('me/', RetrieveUpdateDeleteUserAPIView.as_view(), name='user_settings'),
     path('me/token/', UpdateTokenAPIView.as_view(), name='update_token'),
