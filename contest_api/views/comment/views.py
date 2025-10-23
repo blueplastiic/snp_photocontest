@@ -8,9 +8,6 @@ from service_objects.services import ServiceOutcome
 
 from contest_api.services.comment import CreateCommmentService, DeleteCommentService, ListCommentService, UpdateCommentService
 from contest_api.serializers.comment import ParentCommentSerializer, NewCommentSerializer
-from contest_api.docs.comment import (
-    comments_list_docs,
-)
 
 
 class ListCreateCommentAPIView(APIView):
@@ -27,12 +24,12 @@ class ListCreateCommentAPIView(APIView):
             NewCommentSerializer(outcome.result).data,
             status=status.HTTP_201_CREATED
         ) 
-    @extend_schema(**comments_list_docs)
-    def get(self, request): 
+
+    def get(self, request, *args, **kwargs): 
         outcome: ServiceOutcome = ServiceOutcome(
             ListCommentService,
             {
-                **request.data
+                **kwargs
             }
         )
         return Response(

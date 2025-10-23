@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+from decouple import config
 from pathlib import Path
 import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -155,6 +156,9 @@ REST_FRAMEWORK = {
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 
+LOG_LEVEL = config('DJANGO_LOG_LEVEL', default='INFO')
+CELERY_LOG_LEVEL = config('CELERY_LOG_LEVEL', default='INFO')
+DEBUG_LOGGING = bool(config("DEBUG_LOGGING", default=False))
 
 SWAGGER_SETTINGS = {
     "DOC_EXPANSION": "list",
@@ -177,20 +181,14 @@ SPECTACULAR_SETTINGS = {
         "displayRequestDuration": True,
     },
 }
-from conf.settings.celery import CELERY_LOG_LEVEL
-from conf.settings.django import BASE_DIR, env
-
-LOG_LEVEL = env.str("LOG_LEVEL", default="INFO")
-
-DEBUG_LOGGING = env.bool("DEBUG_LOGGING", default=False)
 
 if DEBUG_LOGGING:
-    ERROR_LOG_FILE_PATH = env.str(
+    ERROR_LOG_FILE_PATH = str(config(
         "ERROR_LOG_FILE_PATH",
         default=os.path.join(BASE_DIR, "logs", "error.log"),
-    )
+    ))
     CELERY_LOG_PATH = os.path.join(
-        BASE_DIR, env.str("CELERY_LOG_PATH", default="logs/celery.log")
+        BASE_DIR, str(config("CELERY_LOG_PATH", default="logs/celery.log"))
     )
     if not os.path.exists(os.path.join(BASE_DIR, "logs")):
         Path(os.path.join(BASE_DIR, "logs")).mkdir(parents=True, exist_ok=True)
@@ -261,3 +259,4 @@ if DEBUG_LOGGING:
             },
         },
     }
+

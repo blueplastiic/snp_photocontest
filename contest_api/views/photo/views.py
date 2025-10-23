@@ -21,7 +21,10 @@ class ListCreatePhotoAPIView(APIView):
     
     @extend_schema(**photos_list_docs)
     def get(self,request):
-        outcome: ServiceOutcome = ServiceOutcome(ListPhotoService, request.query_params) 
+        outcome: ServiceOutcome = ServiceOutcome(
+            ListPhotoService, 
+            request.query_params
+        ) 
 
         return Response(
             {
