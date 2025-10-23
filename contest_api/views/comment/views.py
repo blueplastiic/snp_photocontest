@@ -22,11 +22,11 @@ class ListCreateCommentAPIView(APIView):
             status=status.HTTP_201_CREATED
         ) 
 
-    def get(self, request): 
+    def get(self, request, *args, **kwargs): 
         outcome: ServiceOutcome = ServiceOutcome(
             ListCommentService,
             {
-                **request.data
+                **kwargs
             }
         )
         return Response(
