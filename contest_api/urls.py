@@ -6,17 +6,16 @@ from contest_api.views.photo.views import ListCreatePhotoAPIView, ListCurrentUse
 
 
 urlpatterns=[ 
+    path('photos/', ListCreatePhotoAPIView.as_view()),
+    path('photos/<int:photo_id>/', RetrieveUpdateDeletePhotoAPIView.as_view()),
 
-    path('vote/', CreateVoteAPIView.as_view()),
-    path('vote/<int:photo_id>/', DeleteVoteAPIView.as_view()),
+    path('photos/user/<int:user_id>/', ListUserPhotoAPIView.as_view()),
+    path('photos/me/', ListCurrentUserPhotoAPIView.as_view()),
 
-    path('photo/', ListCreatePhotoAPIView.as_view()),
-    path('photo/<int:photo_id>/', RetrieveUpdateDeletePhotoAPIView.as_view()),
+    path('vote/', CreateVoteAPIView.as_view(), name='vote_create'),
+    path('vote/<int:photo_id>/', DeleteVoteAPIView.as_view(), name='vote_delete'),
 
     path('photos/<int:photo_id>/comments/', ListCreateCommentAPIView.as_view()),
-    path('comment/<int:comment_id>', UpdateDeleteCommentAPIView.as_view()),
-
-    path('photo/user/<int:user_id>/', ListUserPhotoAPIView.as_view()),
-    path('photo/me/', ListCurrentUserPhotoAPIView.as_view()),
+    path('comments/<int:comment_id>', UpdateDeleteCommentAPIView.as_view()),
 ]
 

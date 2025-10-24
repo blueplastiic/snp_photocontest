@@ -30,6 +30,7 @@ class ListCreateCommentAPIView(APIView):
             ParentCommentSerializer(outcome.result, many=True).data,
             status=status.HTTP_200_OK
         ) 
+
     @extend_schema(**comments_create_docs)
     def post(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
@@ -47,25 +48,27 @@ class UpdateDeleteCommentAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(**comments_update_docs)
-    def update(self, request):
+    def patch(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             UpdateCommentService,
             {
-                **request.data, 'user': request.user
+                **kwargs,
+                **request.data, 
+                'user': request.user
             }
         )
 
         return Response(status=status.HTTP_200_OK)
-
 
     @extend_schema(**comments_delete_docs)
     def delete(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             DeleteCommentService,
             {
-                **kwargs, 'user': request.user
+                **kwargs, 
+                'user': request.user
             }
         )
         
         return Response(status=status.HTTP_200_OK)
-    
+
