@@ -21,7 +21,7 @@ from contest_api.services.comment import (
 
 #LIST CREATE COMMENT APIVIEW
 comments_list_docs = {
-    "tags": ['/comment/'],
+    "tags": ['/contest_api/photos/'], #not sure with the tag
     "parameters": prepare_parameters_for_docs(
         ListCommentService,
         exclude=('photo_id',)
@@ -35,7 +35,7 @@ comments_list_docs = {
 }
 
 comments_create_docs = {
-    "tags": ['/comment/'],
+    "tags": ['/contest_api/photos/'], #same problemito baninito
     "request": prepare_request_body_for_docs(
         CreateCommmentService, exclude=("user",)
     ),
@@ -50,7 +50,7 @@ comments_create_docs = {
 
 #UPDATE DELETE COMMENT APIVIEW
 comments_update_docs = {
-    "tags": ['/comment/'],
+    "tags": ['/contest_api/comments/'],
     "request": prepare_request_body_for_docs(
         UpdateCommentService, 
         exclude=("user",)
@@ -63,9 +63,8 @@ comments_update_docs = {
     }
 }
 
-
 comments_delete_docs = {
-    "tags": ['/comment/'],
+    "tags": ['/contest_api/comments/'],
     "parameters": prepare_parameters_for_docs(
         DeleteCommentService, 
         exclude=("user",)

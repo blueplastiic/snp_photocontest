@@ -10,7 +10,6 @@ from service_objects_autodocs.exceptions import (
     get_validation_error_yasg_response,
 )
 
-
 from contest_api.serializers.photo import (
     ListPhotoSerializer, 
     ListCurrentUserPhotoSerializer,
@@ -28,7 +27,7 @@ from contest_api.services.photo import (
 
 #LIST CREATE PHOTO APIVIEW    
 photos_list_docs = {
-    "tags": ['/photo/'],
+    "tags": ['/contest_api/photos/'],
     "parameters": prepare_parameters_for_docs(ListPhotoService),
     "responses": {
         "200": OpenApiResponse(
@@ -38,7 +37,7 @@ photos_list_docs = {
     }
 }
 photo_create_docs = {
-    "tags": ['/photo/'],
+    "tags": ['/contest_api/photos/'],
     "request": prepare_request_body_for_docs(
         CreatePhotoService,
         exclude=('user',),
@@ -57,7 +56,7 @@ photo_create_docs = {
 
 #LIST USER PHOTO APIVIEW
 user_photos_list_docs = {
-    "tags": ['/photo/'],
+    "tags": ['/contest_api/photos/'],
     "parameters": prepare_parameters_for_docs(
         ListUserPhotoService,
         exclude=('user_id',),
@@ -73,7 +72,7 @@ user_photos_list_docs = {
 
 #LIST CURRENT USER PHOTO APIVIEW
 current_user_photos_list_docs = {
-    "tags": ['/photo/'],
+    "tags": ['/contest_api/photos/'],
     "parameters": prepare_parameters_for_docs(
         ListCurrentUserPhotoService,
         exclude=("user",),
@@ -91,7 +90,7 @@ current_user_photos_list_docs = {
 
 #RETRIEVE UPDATE DELETE PHOTO APIVIEW
 photo_retrieve_docs = {
-    "tags": ['/photo/'],
+    "tags": ['/contest_api/photos/'],
     "parameters": prepare_parameters_for_docs(
         RetrievePhotoService,
         exclude=("photo_id",),
@@ -105,7 +104,7 @@ photo_retrieve_docs = {
 }
 
 photo_update_docs = {
-    "tags": ['/photo/'],
+    "tags": ['/contest_api/photos/'],
     "request": prepare_request_body_for_docs(
         RetrievePhotoService,
         exclude=("photo_id",),
@@ -119,7 +118,7 @@ photo_update_docs = {
 }
 
 photo_delete_docs = {
-    "tags": ['/photo/'],
+    "tags": ['/contest_api/photos/'],
     "parameters": prepare_parameters_for_docs(
         RetrievePhotoService,
         exclude=("photo_id", "user"),
