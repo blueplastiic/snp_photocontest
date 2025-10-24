@@ -13,20 +13,26 @@ class Photo(models.Model):
     pub_date = models.DateField(auto_now=True)
     status = models.CharField(max_length=1,choices=PhotoStatus.STATUS_CHOICES, default=PhotoStatus.PENDING)
 
-    photo = models.ImageField(upload_to='photos')
+    image = models.ImageField(upload_to='photos')
 
     feed_version = ImageSpecField(
-        source='photo', 
+        source='image', 
         format='JPEG', 
         processors=[ResizeToFit(600,400)],
         options={'quality':85}
                                   )
     thumbnail_version = ImageSpecField(
-        source='photo',
+        source='image',
         format='JPEG',
         processors=[ResizeToFit(100,100)],
         options={'quality': 50}
     )
     class Meta:
         permissions = [('change_status', 'Can change the status of tasks')]
+
+
+class PhotoHistory(models.Model):
+
+    model = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    old_image = models.ImageField(upload_to='photo_updates') 
 

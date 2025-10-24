@@ -9,7 +9,7 @@ class RetrievePhotoSerializer(serializers.Serializer):
     user_id = serializers.IntegerField(source='user.id')
     username = serializers.CharField(source='user.username')
 
-    image = serializers.ImageField(source='photo')
+    image = serializers.ImageField()
 
     num_votes = serializers.IntegerField()
 
