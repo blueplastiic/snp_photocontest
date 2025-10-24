@@ -8,11 +8,29 @@ from service_objects.services import ServiceOutcome
 
 from contest_api.services.comment import CreateCommmentService, DeleteCommentService, ListCommentService, UpdateCommentService
 from contest_api.serializers.comment import ParentCommentSerializer, NewCommentSerializer
-
+from contest_api.docs.comment import(
+    comments_list_docs,
+    comments_create_docs,
+    comments_delete_docs,
+    comments_update_docs
+)
 
 class ListCreateCommentAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    @extend_schema(**comments_list_docs)
+    def get(self, request, *args, **kwargs): 
+        outcome: ServiceOutcome = ServiceOutcome(
+            ListCommentService,
+            {
+                **kwargs
+            }
+        )
+        return Response(
+            ParentCommentSerializer(outcome.result, many=True).data,
+            status=status.HTTP_200_OK
+        ) 
+    @extend_schema(**comments_create_docs)
     def post(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             CreateCommmentService,
@@ -25,31 +43,10 @@ class ListCreateCommentAPIView(APIView):
             status=status.HTTP_201_CREATED
         ) 
 
-    def get(self, request, *args, **kwargs): 
-        outcome: ServiceOutcome = ServiceOutcome(
-            ListCommentService,
-            {
-                **kwargs
-            }
-        )
-        return Response(
-            ParentCommentSerializer(outcome.result, many=True).data,
-            status=status.HTTP_200_OK
-        ) 
-
 class UpdateDeleteCommentAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request, *args, **kwargs):
-        outcome: ServiceOutcome = ServiceOutcome(
-            DeleteCommentService,
-            {
-                **kwargs, 'user': request.user
-            }
-        )
-        
-        return Response(status=status.HTTP_200_OK)
-
+    @extend_schema(**comments_update_docs)
     def update(self, request):
         outcome: ServiceOutcome = ServiceOutcome(
             UpdateCommentService,
@@ -60,3 +57,15 @@ class UpdateDeleteCommentAPIView(APIView):
 
         return Response(status=status.HTTP_200_OK)
 
+
+    @extend_schema(**comments_delete_docs)
+    def delete(self, request, *args, **kwargs):
+        outcome: ServiceOutcome = ServiceOutcome(
+            DeleteCommentService,
+            {
+                **kwargs, 'user': request.user
+            }
+        )
+        
+        return Response(status=status.HTTP_200_OK)
+    

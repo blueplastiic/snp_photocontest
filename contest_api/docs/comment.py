@@ -10,39 +10,71 @@ from service_objects_autodocs.exceptions import (
 
 from contest_api.serializers.comment import (
     ParentCommentSerializer,
-    NewCommentSerializer,
-    
+    NewCommentSerializer, 
 )
 from contest_api.services.comment import (
     ListCommentService,
     CreateCommmentService,
-
+    UpdateCommentService,
+    DeleteCommentService
 )
 
 #LIST CREATE COMMENT APIVIEW
-# comments_list_docs = {
-#     "tags": ['/comment/'],
-#     "parameters": prepare_request_body_for_docs(
-#         ListCommentService,
-#     ),
-#     "responses": {
-#         "200": OpenApiResponse(
-#             response=ParentCommentSerializer,
-#         ),
-#         "400": get_validation_error_yasg_response(),
-#     }
-# }
-#
-# comments_create_docs = {
-#     "tags": ['/comment/'],
-#     "parameters": prepare_request_body_for_docs(
-#         CreateCommmentService, exclude=("user",)
-#     ),
-#     "responses": {
-#         "200": OpenApiResponse(
-#             response=NewCommentSerializer,
-#         ),
-#         "400": get_validation_error_yasg_response(),
-#     }
-# }
-#
+comments_list_docs = {
+    "tags": ['/comment/'],
+    "parameters": prepare_parameters_for_docs(
+        ListCommentService,
+        exclude=('photo_id',)
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+            response=ParentCommentSerializer,
+        ),
+        "400": get_validation_error_yasg_response(),
+    }
+}
+
+comments_create_docs = {
+    "tags": ['/comment/'],
+    "request": prepare_request_body_for_docs(
+        CreateCommmentService, exclude=("user",)
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+            response=NewCommentSerializer,
+        ),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response(),
+    }
+}
+
+#UPDATE DELETE COMMENT APIVIEW
+comments_update_docs = {
+    "tags": ['/comment/'],
+    "request": prepare_request_body_for_docs(
+        UpdateCommentService, 
+        exclude=("user",)
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+        ),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response(),
+    }
+}
+
+
+comments_delete_docs = {
+    "tags": ['/comment/'],
+    "parameters": prepare_parameters_for_docs(
+        DeleteCommentService, 
+        exclude=("user",)
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+        ),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response(),
+    }
+}
+
