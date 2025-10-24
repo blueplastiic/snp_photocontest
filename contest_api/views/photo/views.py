@@ -13,7 +13,15 @@ from drf_spectacular.utils import extend_schema
 from service_objects.services import ServiceOutcome
 from contest_api.services.photo import CreatePhotoService, RetrievePhotoService, DeletePhotoService, UpdatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService
 from contest_api.serializers.photo import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer, NewPhotoSerializer
-from contest_api.docs.photo import *
+from contest_api.docs.photo import (
+    photos_list_docs,
+    photo_create_docs,
+    user_photos_list_docs,
+    current_user_photos_list_docs,
+    photo_retrieve_docs,
+    photo_update_docs,
+    photo_delete_docs
+)
 
 class ListCreatePhotoAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -41,7 +49,7 @@ class ListCreatePhotoAPIView(APIView):
             },
             status=status.HTTP_200_OK
         )
-
+    @extend_schema(**photo_create_docs)
     def post(self, request):
         outcome: ServiceOutcome = ServiceOutcome(
             CreatePhotoService,
@@ -126,7 +134,8 @@ class RetrieveUpdateDeletePhotoAPIView(APIView):
             RetrievePhotoSerializer(outcome.result).data,
             status=status.HTTP_200_OK
         )
-    
+
+    @extend_schema(**photo_update_docs)
     def patch(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             UpdatePhotoService,
@@ -141,6 +150,7 @@ class RetrieveUpdateDeletePhotoAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+    @extend_schema(**photo_delete_docs)
     def delete(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             DeletePhotoService,

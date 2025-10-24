@@ -1,7 +1,10 @@
 from drf_spectacular.utils import OpenApiResponse
 
-from service_objects_autodocs.auto_parameters_spectacular import prepare_parameters_for_docs, prepare_request_body_for_docs #type: ignore
-from service_objects_autodocs.common import add_pagination_to_data_serializer #type: ignore
+from service_objects_autodocs.common import add_pagination_to_data_serializer 
+from service_objects_autodocs.auto_parameters_spectacular import (
+    prepare_parameters_for_docs, 
+    prepare_request_body_for_docs
+)
 from service_objects_autodocs.exceptions import (                    
     get_authentication_failed_yasg_response,
     get_validation_error_yasg_response,
@@ -34,21 +37,22 @@ photos_list_docs = {
         "400": get_validation_error_yasg_response(),
     }
 }
-#trouble here
-# photo_create_docs = {
-#     "tags": ['/photo/'],
-#     "parameters": prepare_request_body_for_docs(
-#         CreatePhotoService,
-#         exclude=("user",),
-#         
-#     ),
-#     "responses": {
-#         "200": OpenApiResponse(
-#             response=NewPhotoSerializer,
-#         ),
-#         "400": get_validation_error_yasg_response(),
-#     }
-# }
+photo_create_docs = {
+    "tags": ['/photo/'],
+    "request": prepare_request_body_for_docs(
+        CreatePhotoService,
+        exclude=('user',),
+        body_data_types=('multipart/form-data',),
+        
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+            response=NewPhotoSerializer,
+        ),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response(),
+    }
+}
 
 
 #LIST USER PHOTO APIVIEW
@@ -63,10 +67,11 @@ user_photos_list_docs = {
             response=add_pagination_to_data_serializer(ListPhotoSerializer),
         ),
         "400": get_validation_error_yasg_response(),
-        #"401": get_authentication_failed_yasg_respnse()
     }
 }
 
+
+#LIST CURRENT USER PHOTO APIVIEW
 current_user_photos_list_docs = {
     "tags": ['/photo/'],
     "parameters": prepare_parameters_for_docs(
@@ -82,6 +87,9 @@ current_user_photos_list_docs = {
     }
 }
 
+
+
+#RETRIEVE UPDATE DELETE PHOTO APIVIEW
 photo_retrieve_docs = {
     "tags": ['/photo/'],
     "parameters": prepare_parameters_for_docs(
@@ -93,6 +101,33 @@ photo_retrieve_docs = {
             response=RetrievePhotoSerializer,
         ),
         "400": get_validation_error_yasg_response(),
+    }
+}
+
+photo_update_docs = {
+    "tags": ['/photo/'],
+    "request": prepare_request_body_for_docs(
+        RetrievePhotoService,
+        exclude=("photo_id",),
+        body_data_types=('multipart/form-data',),
+    ),
+    "responses": {
+        "200": OpenApiResponse(),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response()
+    }
+}
+
+photo_delete_docs = {
+    "tags": ['/photo/'],
+    "parameters": prepare_parameters_for_docs(
+        RetrievePhotoService,
+        exclude=("photo_id", "user"),
+    ),
+    "responses": {
+        "200": OpenApiResponse(),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response()
     }
 }
 
