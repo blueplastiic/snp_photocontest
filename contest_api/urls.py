@@ -8,16 +8,17 @@ app_name = 'contest_api'
 
 urlpatterns=[ 
 
+
+    path('photos/', ListCreatePhotoAPIView.as_view()),
+    path('photos/<int:photo_id>/', RetrieveDeletePhotoAPIView.as_view()),
+
     path('vote/', CreateVoteAPIView.as_view(), name='vote_create'),
     path('vote/<int:photo_id>/', DeleteVoteAPIView.as_view(), name='vote_delete'),
 
-    path('photo/', ListCreatePhotoAPIView.as_view(), name='photo_list_create'),
-    path('photo/<int:photo_id>/', RetrieveDeletePhotoAPIView.as_view(), name='photo_retrieve'),
-
     path('photos/<int:photo_id>/comments/', ListCreateCommentAPIView.as_view()),
-    path('comment/<int:comment_id>', UpdateDeleteCommentAPIView.as_view(), name='comment_actions'),
+    path('comments/<int:comment_id>', UpdateDeleteCommentAPIView.as_view()),
 
-    path('photo/user/<int:user_id>/', ListUserPhotoAPIView.as_view(), name='photo_list_user'),
-    path('photo/me/', ListCurrentUserPhotoAPIView.as_view(), name='photo_list_current_user'),
+    path('photos/user/<int:user_id>/', ListUserPhotoAPIView.as_view()),
+    path('photos/me/', ListCurrentUserPhotoAPIView.as_view()),
 ]
 
