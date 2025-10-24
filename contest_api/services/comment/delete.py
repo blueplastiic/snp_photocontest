@@ -12,7 +12,6 @@ from models_app.models import Comment, User
 
 
 class DeleteCommentService(ServiceWithResult):
-    photo_id = forms.IntegerField()
     comment_id = forms.IntegerField()
     user = ModelField(User)
 
