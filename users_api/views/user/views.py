@@ -7,7 +7,8 @@ from service_objects.services import ServiceOutcome
 from users_api.services.user import CreateUserService, DeleteUserService, RetrieveUserService, UpdatePublicInfoUserService
 from users_api.serializers import PublicUserSerializer, PrivateUserSerializer, RetrieveTokenSerializer
 
-class UserAPIView(APIView):
+
+class RetrieveUserAPIView(APIView): #naming troubles again
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
@@ -16,9 +17,12 @@ class UserAPIView(APIView):
             kwargs
         )
 
-        return Response(PublicUserSerializer(outcome.result).data, status.HTTP_200_OK)
+        return Response(
+            PublicUserSerializer(outcome.result).data, 
+            status.HTTP_201_CREATED
+        )
 
-class PrivateUserAPIView(APIView):
+class RetrieveUpdateDeleteUserAPIView(APIView): #naming troubles again
 
     permission_classes = [IsAuthenticated]
 

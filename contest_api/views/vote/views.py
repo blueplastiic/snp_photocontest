@@ -12,7 +12,8 @@ class CreateVoteAPIView(APIView):
         outcome: ServiceOutcome = ServiceOutcome(
             CreateVoteService,
             {
-                **kwargs, **request.data, 'user': request.user
+                **request.data, 
+                'user': request.user
             }
         )
         
@@ -25,7 +26,9 @@ class DeleteVoteAPIView(APIView):
         outcome: ServiceOutcome = ServiceOutcome(
             DeleteVoteService,
             {
-                **kwargs, **request.data, 'user': request.user
+                **kwargs, 
+                **request.data, 
+                'user': request.user
             }
         )
 

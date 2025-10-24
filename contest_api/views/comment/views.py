@@ -14,7 +14,9 @@ class ListCreateCommentAPIView(APIView):
         outcome: ServiceOutcome = ServiceOutcome(
             CreateCommmentService,
             {
-                **kwargs, **request.data, 'user': request.user
+                **kwargs, 
+                **request.data, 
+                'user': request.user
             }
         )
         return Response(
@@ -22,11 +24,11 @@ class ListCreateCommentAPIView(APIView):
             status=status.HTTP_201_CREATED
         ) 
 
-    def get(self, request): 
+    def get(self, request, *args, **kwargs): 
         outcome: ServiceOutcome = ServiceOutcome(
             ListCommentService,
             {
-                **request.data
+                **kwargs
             }
         )
         return Response(
@@ -37,23 +39,26 @@ class ListCreateCommentAPIView(APIView):
 class UpdateDeleteCommentAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def patch(self, request, *args, **kwargs):
+        outcome: ServiceOutcome = ServiceOutcome(
+            UpdateCommentService,
+            {
+                **kwargs,
+                **request.data, 
+                'user': request.user
+            }
+        )
+
+        return Response(status=status.HTTP_200_OK)
+
     def delete(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             DeleteCommentService,
             {
-                **kwargs, 'user': request.user
+                **kwargs, 
+                'user': request.user
             }
         )
         
-        return Response(status=status.HTTP_200_OK)
-
-    def update(self, request):
-        outcome: ServiceOutcome = ServiceOutcome(
-            UpdateCommentService,
-            {
-                **request.data, 'user': request.user
-            }
-        )
-
         return Response(status=status.HTTP_200_OK)
 
