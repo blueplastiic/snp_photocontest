@@ -37,7 +37,9 @@ class ListCreateCommentAPIView(APIView):
         outcome: ServiceOutcome = ServiceOutcome(
             CreateCommmentService,
             {
-                **request.data, 'user': request.user
+                **kwargs,
+                **request.data,
+                'user': request.user
             }
         )
         return Response(

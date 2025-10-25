@@ -50,11 +50,12 @@ class ListCreatePhotoAPIView(APIView):
             status=status.HTTP_200_OK
         )
     @extend_schema(**photo_create_docs)
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             CreatePhotoService,
             {
-                **request.data, 'user': request.user
+                **request.data, 
+                'user': request.user
              },
             request.FILES
         )

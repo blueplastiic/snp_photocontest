@@ -144,7 +144,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-
+    
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 
     'EXCEPTION_HANDLER': 'utils.exception_handler.drf_exception_response',
@@ -167,7 +167,13 @@ SWAGGER_SETTINGS = {
     "TAGS_SORTER": "alpha",
     "OPERATIONS_SORTER": "method",
     "DEFAULT_MODEL_RENDERING": "example",
-    "SECURITY_DEFINITIONS": {},
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
 }
 
 

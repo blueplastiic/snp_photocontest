@@ -8,10 +8,10 @@ from service_objects_autodocs.exceptions import (
 )
 
 
-from contest_api.serializers.comment import (
-    ParentCommentSerializer,
-    NewCommentSerializer, 
-)
+from users_api.serializers.user.private import PrivateUserSerializer
+from users_api.serializers.user.public import PublicUserSerializer
+
+
 from users_api.serializers.token.retrieve import RetrieveTokenSerializer
 from users_api.services.user import (
     CreateUserService,
@@ -29,7 +29,7 @@ user_public_retrieve_docs = {
     ),
     "responses": {
         "200": OpenApiResponse(
-            response=ParentCommentSerializer,
+            response=PublicUserSerializer,
         ),
         "400": get_validation_error_yasg_response(),
     }
@@ -40,7 +40,7 @@ user_private_retrieve_docs = {
     "tags": ['/users_api/'], 
     "responses": {
         "200": OpenApiResponse(
-            response=NewCommentSerializer,
+            response=PrivateUserSerializer,
         ),
         "400": get_validation_error_yasg_response(),
         "401": get_authentication_failed_yasg_response(),
