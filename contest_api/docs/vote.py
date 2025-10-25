@@ -33,7 +33,7 @@ votes_delete_docs = {
     "tags": ['/contest_api/votes/'],
     "parameters": prepare_parameters_for_docs(
         DeleteVoteService, 
-        exclude=("user",)
+        exclude=("user","photo_id")
     ),
     "responses": {
         "200": OpenApiResponse(

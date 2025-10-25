@@ -25,7 +25,7 @@ user_public_retrieve_docs = {
     "tags": ['/users_api/'], 
     "parameters": prepare_parameters_for_docs(
         RetrieveUserService,
-        exclude=('photo_id',)
+        exclude=('user_id',)
     ),
     "responses": {
         "200": OpenApiResponse(

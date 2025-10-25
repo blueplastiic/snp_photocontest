@@ -1,6 +1,7 @@
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 from drf_spectacular.utils import extend_schema
 
@@ -16,7 +17,7 @@ from contest_api.docs.comment import(
 )
 
 class ListCreateCommentAPIView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
 
     @extend_schema(**comments_list_docs)
     def get(self, request, *args, **kwargs): 

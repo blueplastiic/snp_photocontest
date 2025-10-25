@@ -22,7 +22,8 @@ from contest_api.services.photo import (
     ListUserPhotoService, 
     ListCurrentUserPhotoService, 
     RetrievePhotoService,
-    CreatePhotoService
+    CreatePhotoService,
+    UpdatePhotoService
 )
 
 #LIST CREATE PHOTO APIVIEW    
@@ -106,8 +107,8 @@ photo_retrieve_docs = {
 photo_update_docs = {
     "tags": ['/contest_api/photos/'],
     "request": prepare_request_body_for_docs(
-        RetrievePhotoService,
-        exclude=("photo_id",),
+        UpdatePhotoService,
+        exclude=("photo_id", "user"),
         body_data_types=('multipart/form-data',),
     ),
     "responses": {

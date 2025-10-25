@@ -54,7 +54,7 @@ comments_update_docs = {
     "tags": ['/contest_api/comments/'],
     "request": prepare_request_body_for_docs(
         UpdateCommentService, 
-        exclude=("user",)
+        exclude=("user","comment_id")
     ),
     "responses": {
         "200": OpenApiResponse(
@@ -68,7 +68,7 @@ comments_delete_docs = {
     "tags": ['/contest_api/comments/'],
     "parameters": prepare_parameters_for_docs(
         DeleteCommentService, 
-        exclude=("user",)
+        exclude=("user","comment_id")
     ),
     "responses": {
         "200": OpenApiResponse(
