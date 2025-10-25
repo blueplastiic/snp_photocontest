@@ -12,18 +12,19 @@ from contest_api.serializers.comment import (
     ParentCommentSerializer,
     NewCommentSerializer, 
 )
-from contest_api.services.comment import (
-    ListCommentService,
-    CreateCommmentService,
-    UpdateCommentService,
-    DeleteCommentService
+from users_api.serializers.token.retrieve import RetrieveTokenSerializer
+from users_api.services.user import (
+    CreateUserService,
+    DeleteUserService,
+    RetrieveUserService,
+    UpdatePublicInfoUserService
 )
 
-#LIST CREATE COMMENT APIVIEW
-comments_list_docs = {
-    "tags": ['/contest_api/photos/'], #not sure with the tag
+#RETRIEVE USER APIVIEW
+user_public_retrieve_docs = {
+    "tags": ['/users_api/'], 
     "parameters": prepare_parameters_for_docs(
-        ListCommentService,
+        RetrieveUserService,
         exclude=('photo_id',)
     ),
     "responses": {
@@ -34,12 +35,9 @@ comments_list_docs = {
     }
 }
 
-comments_create_docs = {
-    "tags": ['/contest_api/photos/'], #same problemito baninito
-    "request": prepare_request_body_for_docs(
-        CreateCommmentService, 
-        exclude=("user","photo_id")
-    ),
+#RETRIEVE UPDATE DELETE USER APIVIEW 
+user_private_retrieve_docs = {
+    "tags": ['/users_api/'], 
     "responses": {
         "200": OpenApiResponse(
             response=NewCommentSerializer,
@@ -49,11 +47,10 @@ comments_create_docs = {
     }
 }
 
-#UPDATE DELETE COMMENT APIVIEW
-comments_update_docs = {
-    "tags": ['/contest_api/comments/'],
+user_update_docs = {
+    "tags": ['/users_api/'],
     "request": prepare_request_body_for_docs(
-        UpdateCommentService, 
+        UpdatePublicInfoUserService, 
         exclude=("user",)
     ),
     "responses": {
@@ -64,10 +61,10 @@ comments_update_docs = {
     }
 }
 
-comments_delete_docs = {
-    "tags": ['/contest_api/comments/'],
+user_delete_docs = {
+    "tags": ['/users_api/'],
     "parameters": prepare_parameters_for_docs(
-        DeleteCommentService, 
+        DeleteUserService, 
         exclude=("user",)
     ),
     "responses": {
@@ -75,6 +72,21 @@ comments_delete_docs = {
         ),
         "400": get_validation_error_yasg_response(),
         "401": get_authentication_failed_yasg_response(),
+    }
+}
+
+
+#CREATE USER APIVIEW
+user_create_docs = {
+    "tags": ['/users_api/'],
+    "request": prepare_request_body_for_docs(
+        CreateUserService, 
+    ),
+    "responses": {
+        "201": OpenApiResponse(
+            RetrieveTokenSerializer
+        ),
+        "400": get_validation_error_yasg_response(),
     }
 }
 

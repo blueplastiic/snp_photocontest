@@ -8,16 +8,22 @@ from users_api.serializers.token.retrieve import RetrieveTokenSerializer
 from rest_framework import status
 from service_objects.services import ServiceOutcome
 
+from drf_spectacular.utils import extend_schema
+from users_api.docs.token import user_update_docs
+
 class UpdateTokenAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(**user_update_docs)
     def post(self, request):
         outcome: ServiceOutcome = ServiceOutcome(
             UpdateTokenService,
-            {'user': request.user}
+            {
+                'user': request.user
+            }
         )
         return Response(
             RetrieveTokenSerializer(outcome.result).data, 
-            status.HTTP_200_OK
+            status.HTTP_201_CREATED
         )
 
