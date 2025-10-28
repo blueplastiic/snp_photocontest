@@ -22,6 +22,6 @@ class UpdateTokenService(ServiceWithResult):
         return self.cleaned_data['user']
 
     def update_token(self) -> Token:
-        Token.objects.get(user=self._user)
+        Token.objects.get(user=self._user).delete()
         return Token.objects.create(user=self._user)
 
