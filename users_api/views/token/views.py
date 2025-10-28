@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from users_api.services.token.update import UpdateTokenService
-from users_api.serializers.token.retrieve import RetrieveTokenSerializer
+from users_api.serializers.token.update import UpdateTokenSerializer
 
 from rest_framework import status
 from service_objects.services import ServiceOutcome
@@ -23,7 +23,7 @@ class UpdateTokenAPIView(APIView):
             }
         )
         return Response(
-            RetrieveTokenSerializer(outcome.result).data, 
-            status.HTTP_201_CREATED
+            UpdateTokenSerializer(outcome.result).data,
+            status.HTTP_200_OK
         )
 

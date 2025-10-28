@@ -1,11 +1,12 @@
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from service_objects.services import ServiceOutcome
 from users_api.services.user import CreateUserService, DeleteUserService, RetrieveUserService, UpdatePublicInfoUserService
-from users_api.serializers import PublicUserSerializer, PrivateUserSerializer, RetrieveTokenSerializer
+from users_api.serializers.user import PublicUserSerializer, PrivateUserSerializer
+from users_api.serializers.token import RetrieveTokenSerializer
 
 from drf_spectacular.utils import extend_schema
 
@@ -16,6 +17,8 @@ from users_api.docs.user import (
     user_delete_docs,
     user_create_docs
 )
+
+from service_objects.services import ServiceOutcome
 
 
 class RetrieveUserAPIView(APIView): #naming troubles again
@@ -83,7 +86,10 @@ class CreateUserAPIView(APIView):
         )
 
         return Response(
-            RetrieveTokenSerializer(outcome.result).data, 
+            RetrieveTokenSerializer(outcome.result).data,
             status=status.HTTP_201_CREATED
         )
+
+class LoginUserAPIView(ObtainAuthToken):
+    pass
 

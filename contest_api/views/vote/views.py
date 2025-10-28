@@ -37,6 +37,4 @@ class DeleteVoteAPIView(APIView):
                 'user': request.user
             }
         )
-
         return Response(outcome.response_status)
-
