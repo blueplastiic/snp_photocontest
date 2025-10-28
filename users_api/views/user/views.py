@@ -1,3 +1,4 @@
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -5,8 +6,8 @@ from rest_framework import status
 
 from service_objects.services import ServiceOutcome
 from users_api.services.user import CreateUserService, DeleteUserService, RetrieveUserService, UpdatePublicInfoUserService
-from users_api.serializers import PublicUserSerializer, PrivateUserSerializer, RetrieveTokenSerializer
-
+from users_api.serializers.user import PublicUserSerializer, PrivateUserSerializer
+from users_api.serializers.token import RetrieveTokenSerializer
 
 class RetrieveUserAPIView(APIView): #naming troubles again
     permission_classes = [AllowAny]
@@ -58,7 +59,10 @@ class CreateUserAPIView(APIView):
         )
 
         return Response(
-            RetrieveTokenSerializer(outcome.result).data, 
+            RetrieveTokenSerializer(outcome.result).data,
             status=status.HTTP_201_CREATED
         )
 
+class LoginUserAPIView(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
