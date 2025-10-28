@@ -15,7 +15,8 @@ from users_api.docs.user import (
     user_private_retrieve_docs,
     user_update_docs, 
     user_delete_docs,
-    user_create_docs
+    user_create_docs,
+    user_login_docs
 )
 
 from service_objects.services import ServiceOutcome
@@ -91,6 +92,7 @@ class CreateUserAPIView(APIView):
         )
 
 class LoginUserAPIView(ObtainAuthToken):
+
+    @extend_schema(**user_login_docs)
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
-
