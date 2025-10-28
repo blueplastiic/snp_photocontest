@@ -1,2 +1,1 @@
-from .views import RetrieveUserAPIView, RetrieveUpdateDeleteUserAPIView, CreateUserAPIView
-
+from .views import RetrieveUserAPIView, RetrieveUpdateDeleteUserAPIView, CreateUserAPIView, LoginUserAPIView
