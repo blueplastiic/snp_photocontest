@@ -7,7 +7,16 @@ from users_api.views.user import (
     LoginUserAPIView
 )
 
+from users_api.views.user import (
+    RetrieveUserAPIView,
+    RetrieveUpdateDeleteUserAPIView,
+    CreateUserAPIView,
+    LoginUserAPIView
+)
+
 from users_api.views.token import UpdateTokenAPIView
+
+app_name = 'users_api'
 
 urlpatterns=[
     path('register/', CreateUserAPIView.as_view()),

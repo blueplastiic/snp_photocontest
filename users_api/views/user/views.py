@@ -91,5 +91,6 @@ class CreateUserAPIView(APIView):
         )
 
 class LoginUserAPIView(ObtainAuthToken):
-    pass
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
