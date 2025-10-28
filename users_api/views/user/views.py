@@ -8,6 +8,15 @@ from users_api.services.user import CreateUserService, DeleteUserService, Retrie
 from users_api.serializers.user import PublicUserSerializer, PrivateUserSerializer
 from users_api.serializers.token import RetrieveTokenSerializer
 
+from drf_spectacular.utils import extend_schema
+
+from users_api.docs.user import (
+    user_public_retrieve_docs,
+    user_private_retrieve_docs,
+    user_update_docs, 
+    user_delete_docs,
+    user_create_docs
+)
 
 class RetrieveUserAPIView(APIView): #naming troubles again
     permission_classes = [AllowAny]
@@ -59,7 +68,6 @@ class CreateUserAPIView(APIView):
         )
 
         return Response(
-            RetrieveTokenSerializer(outcome.result).data, 
+            RetrieveTokenSerializer(outcome.result).data,
             status=status.HTTP_201_CREATED
         )
-
