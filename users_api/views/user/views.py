@@ -1,3 +1,4 @@
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -7,16 +8,6 @@ from service_objects.services import ServiceOutcome
 from users_api.services.user import CreateUserService, DeleteUserService, RetrieveUserService, UpdatePublicInfoUserService
 from users_api.serializers.user import PublicUserSerializer, PrivateUserSerializer
 from users_api.serializers.token import RetrieveTokenSerializer
-
-from drf_spectacular.utils import extend_schema
-
-from users_api.docs.user import (
-    user_public_retrieve_docs,
-    user_private_retrieve_docs,
-    user_update_docs, 
-    user_delete_docs,
-    user_create_docs
-)
 
 class RetrieveUserAPIView(APIView): #naming troubles again
     permission_classes = [AllowAny]
@@ -71,3 +62,7 @@ class CreateUserAPIView(APIView):
             RetrieveTokenSerializer(outcome.result).data,
             status=status.HTTP_201_CREATED
         )
+
+class LoginUserAPIView(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
