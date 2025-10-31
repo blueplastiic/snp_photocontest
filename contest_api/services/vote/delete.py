@@ -54,6 +54,7 @@ class DeleteVoteService(ServiceWithResult):
 
     def delete_vote(self) -> None:
         self._vote.delete() #pyright: ignore
+
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             str(self._photo.user_id),

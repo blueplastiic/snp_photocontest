@@ -10,6 +10,10 @@ from service_objects.fields import ModelField
 
 from models_app.models import Photo, User, Comment
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from utils.notification import build_notification
+
 class CreateCommmentService(ServiceWithResult):
     user = ModelField(User)
     photo_id = forms.IntegerField()
@@ -51,12 +55,27 @@ class CreateCommmentService(ServiceWithResult):
             return None
 
     def create_comment(self) -> Comment:
-        return Comment.objects.create(
+        comment = Comment.objects.create(
             user=self._user,
             photo=self._photo,
             parent=self._parent,
             content=self.cleaned_data.get('content')
         )
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            str(self._photo.user_id),
+            build_notification(
+                type='send_notification',
+                action='create_comment',
+                photo_id=self.cleaned_data['photo_id'],
+                initiator_username=self._user.username,
+                votes_count=self._photo.comments.count()
+            )
+        )
+
+        return comment
+
 
     def photo_presence(self) -> None:
         if not self._photo:
