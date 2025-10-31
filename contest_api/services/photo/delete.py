@@ -12,9 +12,12 @@ from service_objects.errors import NotFound
 from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
-from models_app.models import User, Photo
+from models_app.models import User, Photo, Comment
 from utils.statuses import PhotoStatus
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from utils.notification import build_notification
 
 class DeletePhotoService(ServiceWithResult):
     user = ModelField(User)
@@ -49,6 +52,21 @@ class DeletePhotoService(ServiceWithResult):
         photo = self._photo
         if photo.status in (PhotoStatus.REJECTED, PhotoStatus.PENDING): #pyright:ignore
             photo.delete() #pyright:ignore
+
+            channel_layer = get_channel_layer()
+            photo_comments = Comment.objects.filter(photo=self._photo)
+
+            for comment in photo_comments:
+                async_to_sync(channel_layer.group_send)(
+                    str(comment.user_id),
+                    build_notification(
+                        type='send_notification',
+                        action='delete_photo',
+                        photo_id=self.cleaned_data['photo_id'],
+                        initiator_username=self._user.username,
+                    )
+                )
+
             return
 
         photo.status = PhotoStatus.DELETED #pyright:ignore
