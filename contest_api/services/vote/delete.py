@@ -10,6 +10,9 @@ from service_objects.errors import NotFound
 from models_app.models import Vote, Photo, User
 from django import forms
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from utils.notification import build_notification
 
 class DeleteVoteService(ServiceWithResult):
     photo_id = forms.IntegerField()
@@ -51,6 +54,17 @@ class DeleteVoteService(ServiceWithResult):
 
     def delete_vote(self) -> None:
         self._vote.delete() #pyright: ignore
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            str(self._photo.user_id),
+            build_notification(
+                type='send_notification',
+                action='delete_vote',
+                photo_id=self.cleaned_data['photo_id'],
+                initiator_username=self._user.username,
+                votes_count=self._photo.votes.count()
+            )
+        )
         
     def photo_presence(self) -> None:
         if not self._photo:
