@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'models_app',
     'users_api',
     'contest_api',
+    'notifications',
     'rest_framework',
     'rest_framework.authtoken',
     'imagekit',
@@ -79,6 +80,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'conf.wsgi.application'
 ASGI_APPLICATION = config('ASGI_APPLICATION')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
