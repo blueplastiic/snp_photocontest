@@ -32,7 +32,7 @@ class CreateUserService(ServiceWithResult):
             )
     
     def username_presence(self) -> None:
-        if User.objects.filter(username=self.cleaned_data['username'].exists()):
+        if User.objects.filter(username=self.cleaned_data['username']).exists():
             self.add_error(
                 'username',
                 ValidationError(

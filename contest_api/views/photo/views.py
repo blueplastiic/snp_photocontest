@@ -8,15 +8,26 @@ from django.conf import settings
 
 from utils.paginator import CustomPagination
 
+from drf_spectacular.utils import extend_schema
+
 from service_objects.services import ServiceOutcome
 from contest_api.services.photo import CreatePhotoService, RetrievePhotoService, DeletePhotoService, UpdatePhotoService, ListPhotoService, ListUserPhotoService, ListCurrentUserPhotoService
 from contest_api.serializers.photo import ListPhotoSerializer, ListCurrentUserPhotoSerializer, RetrievePhotoSerializer, NewPhotoSerializer
-
+from contest_api.docs.photo import (
+    photos_list_docs,
+    photo_create_docs,
+    user_photos_list_docs,
+    current_user_photos_list_docs,
+    photo_retrieve_docs,
+    photo_update_docs,
+    photo_delete_docs
+)
 
 class ListCreatePhotoAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
-
+    
+    @extend_schema(**photos_list_docs)
     def get(self,request):
         outcome: ServiceOutcome = ServiceOutcome(
             ListPhotoService, 
@@ -38,12 +49,13 @@ class ListCreatePhotoAPIView(APIView):
             },
             status=status.HTTP_200_OK
         )
-
-    def post(self, request):
+    @extend_schema(**photo_create_docs)
+    def post(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             CreatePhotoService,
             {
-                **request.data, 'user': request.user
+                **request.data, 
+                'user': request.user
              },
             request.FILES
         )
@@ -56,6 +68,7 @@ class ListCreatePhotoAPIView(APIView):
 class ListUserPhotoAPIView(APIView):
     permrssion_classes = [AllowAny]
 
+    @extend_schema(**user_photos_list_docs)
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             ListUserPhotoService,
@@ -84,6 +97,7 @@ class ListUserPhotoAPIView(APIView):
 class ListCurrentUserPhotoAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(**current_user_photos_list_docs)
     def get(self,request):
         outcome: ServiceOutcome = ServiceOutcome(
             ListCurrentUserPhotoService,
@@ -111,6 +125,7 @@ class RetrieveUpdateDeletePhotoAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
 
+    @extend_schema(**photo_retrieve_docs)
     def get(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             RetrievePhotoService,
@@ -120,7 +135,8 @@ class RetrieveUpdateDeletePhotoAPIView(APIView):
             RetrievePhotoSerializer(outcome.result).data,
             status=status.HTTP_200_OK
         )
-    
+
+    @extend_schema(**photo_update_docs)
     def patch(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             UpdatePhotoService,
@@ -135,6 +151,7 @@ class RetrieveUpdateDeletePhotoAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+    @extend_schema(**photo_delete_docs)
     def delete(self, request, *args, **kwargs):
         outcome: ServiceOutcome = ServiceOutcome(
             DeletePhotoService,

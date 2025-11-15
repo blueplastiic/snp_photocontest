@@ -4,11 +4,8 @@ from contest_api.views.vote.views import CreateVoteAPIView, DeleteVoteAPIView
 from contest_api.views.comment.views import ListCreateCommentAPIView, UpdateDeleteCommentAPIView
 from contest_api.views.photo.views import ListCreatePhotoAPIView, ListCurrentUserPhotoAPIView, ListUserPhotoAPIView, RetrieveUpdateDeletePhotoAPIView
 
-app_name = 'contest_api'
 
 urlpatterns=[ 
-
-
     path('photos/', ListCreatePhotoAPIView.as_view()),
     path('photos/<int:photo_id>/', RetrieveUpdateDeletePhotoAPIView.as_view()),
 

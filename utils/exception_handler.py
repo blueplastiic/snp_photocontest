@@ -1,5 +1,7 @@
 import sys
 import traceback
+import types
+
 from typing import Union
 
 from django.conf import settings
@@ -175,6 +177,9 @@ def drf_exception_response(
     :param exception:
     :param context:
     """
+    traceback = sys.exc_info()[2]
+    back_frame = traceback.tb_frame.f_back
+
     exception = custom_exception_handler(exception)
     extend_exception_for_response(exception)
 

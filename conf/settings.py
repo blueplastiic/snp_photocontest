@@ -16,7 +16,12 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "static/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -46,9 +51,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'imagekit',
     'service_objects',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
+    "log_request_id.middleware.RequestIDMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -126,7 +133,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -138,68 +144,125 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
     'EXCEPTION_HANDLER': 'utils.exception_handler.drf_exception_response',
+
     'PAGE_SIZE': 4,
+
+
 }
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 
-DJANGO_LOG_LEVEL = config('DJANGO_LOG_LEVEL', default='INFO')
-DB_LOG_LEVEL = config('DB_LOG_LEVEL', default='INFO')
+LOG_LEVEL = config('DJANGO_LOG_LEVEL', default='INFO')
 CELERY_LOG_LEVEL = config('CELERY_LOG_LEVEL', default='INFO')
+DEBUG_LOGGING = bool(config("DEBUG_LOGGING", default=False))
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-
-    "formatters": {
-        "verbose": {
-            "format": "{levelname} {asctime} {name} {module} {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
-
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-        },
-        "file":
-            {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs.log"),
-        },
-    },
-
-    "loggers": {
-        "django.request": {
-            "handlers": ["console","file"],
-            "level": DJANGO_LOG_LEVEL,
-            "propagate": False,
-        },
-
-        "django.server": {
-            "handlers": ["console", "file"],
-            "level": DJANGO_LOG_LEVEL,
-            "propagate": False,
-        },
-
-        "django.db.backends": {
-            "level": DB_LOG_LEVEL,
-            "handlers": ["console", "file"],
-            "propagate": False,
-        },
-
-        "celery":{
-            "level": CELERY_LOG_LEVEL,
-            "handlers": ["console", "file"],
-            "propagate": False,
+SWAGGER_SETTINGS = {
+    "DOC_EXPANSION": "list",
+    "SHOW_EXTENSIONS": True,
+    "USE_SESSION_AUTH": False,
+    "TAGS_SORTER": "alpha",
+    "OPERATIONS_SORTER": "method",
+    "DEFAULT_MODEL_RENDERING": "example",
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
         }
     },
 }
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "REST API",
+    "DESCRIPTION": "API endpoints",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "displayOperationId": False,
+        "displayRequestDuration": True,
+    },
+}
+
+if DEBUG_LOGGING:
+    ERROR_LOG_FILE_PATH = str(config(
+        "ERROR_LOG_FILE_PATH",
+        default=os.path.join(BASE_DIR, "logs", "error.log"),
+    ))
+    CELERY_LOG_PATH = os.path.join(
+        BASE_DIR, str(config("CELERY_LOG_PATH", default="logs/celery.log"))
+    )
+    if not os.path.exists(os.path.join(BASE_DIR, "logs")):
+        Path(os.path.join(BASE_DIR, "logs")).mkdir(parents=True, exist_ok=True)
+
+    if not os.path.exists(ERROR_LOG_FILE_PATH):
+        Path(os.path.join(BASE_DIR, ERROR_LOG_FILE_PATH)).touch(exist_ok=True)
+
+    if not os.path.exists(CELERY_LOG_PATH):
+        Path(os.path.join(BASE_DIR, CELERY_LOG_PATH)).touch(exist_ok=True)
+
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {
+                "format": "%(levelname)-8s [%(asctime)s] %(levelname)s [%(request_id)s]: %(message)s"
+            },
+            "celery": {
+                "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+                "datefmt": "%Y/%m/%d %H:%M:%S",
+            },
+        },
+        "filters": {"request_id": {"()": "log_request_id.filters.RequestIDFilter"}},
+        "handlers": {
+            "console": {
+                "filters": [
+                    "request_id",
+                ],
+                "class": "rich.logging.RichHandler",
+                "formatter": "standard",
+                "level": "DEBUG",
+            },
+            "error_file": {
+                "filters": [
+                    "request_id",
+                ],
+                "class": "logging.FileHandler",
+                "formatter": "standard",
+                "level": "DEBUG",
+                "filename": ERROR_LOG_FILE_PATH,
+            },
+            "celery": {
+                "level": CELERY_LOG_LEVEL,
+                "class": "logging.FileHandler",
+                "filename": CELERY_LOG_PATH,
+                "formatter": "celery",
+            },
+        },
+        "loggers": {
+            "django": {
+                "handlers": ["console"],
+                "level": "INFO",
+            },
+            "django.db.backends": {
+                "level": "DEBUG",
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "error": {
+                "level": "DEBUG",
+                "handlers": ["error_file"],
+                "propagate": True,
+            },
+            "celery": {
+                "handlers": ["celery"],
+                "level": CELERY_LOG_LEVEL,
+                "propagate": True,
+            },
+        },
+    }
 

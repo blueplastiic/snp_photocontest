@@ -1,0 +1,104 @@
+from drf_spectacular.utils import OpenApiResponse
+
+from service_objects_autodocs.auto_parameters_spectacular import prepare_parameters_for_docs, prepare_request_body_for_docs
+from service_objects_autodocs.exceptions import (
+    get_authentication_failed_yasg_response,
+    get_validation_error_yasg_response,
+)
+
+
+from users_api.serializers.user import PrivateUserSerializer
+from users_api.serializers.user import PublicUserSerializer
+
+
+from users_api.serializers.user import LoginUserSerializer
+from users_api.serializers.token.retrieve import RetrieveTokenSerializer
+from users_api.services.user import (
+    CreateUserService,
+    DeleteUserService,
+    RetrieveUserService,
+    UpdatePublicInfoUserService
+)
+
+#RETRIEVE USER APIVIEW
+user_public_retrieve_docs = {
+    "tags": ['/users_api/'], 
+    "parameters": prepare_parameters_for_docs(
+        RetrieveUserService,
+        exclude=('user_id',)
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+            response=PublicUserSerializer,
+        ),
+        "400": get_validation_error_yasg_response(),
+    }
+}
+
+#RETRIEVE UPDATE DELETE USER APIVIEW 
+user_private_retrieve_docs = {
+    "tags": ['/users_api/'], 
+    "responses": {
+        "200": OpenApiResponse(
+            response=PrivateUserSerializer,
+        ),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response(),
+    }
+}
+
+user_update_docs = {
+    "tags": ['/users_api/'],
+    "request": prepare_request_body_for_docs(
+        UpdatePublicInfoUserService, 
+        exclude=("user",)
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+        ),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response(),
+    }
+}
+
+user_delete_docs = {
+    "tags": ['/users_api/'],
+    "parameters": prepare_parameters_for_docs(
+        DeleteUserService, 
+        exclude=("user",)
+    ),
+    "responses": {
+        "200": OpenApiResponse(
+        ),
+        "400": get_validation_error_yasg_response(),
+        "401": get_authentication_failed_yasg_response(),
+    }
+}
+
+
+#CREATE USER APIVIEW
+user_create_docs = {
+    "tags": ['/users_api/'],
+    "request": prepare_request_body_for_docs(
+        CreateUserService, 
+    ),
+    "responses": {
+        "201": OpenApiResponse(
+            RetrieveTokenSerializer
+        ),
+        "400": get_validation_error_yasg_response(),
+    }
+}
+
+#LOGIN USER APIVIEW
+user_login_docs  = {
+    "tags": ['/users_api/'],
+    "request": LoginUserSerializer,
+    "responses": {
+        "201": OpenApiResponse(
+            RetrieveTokenSerializer
+        ),
+        "400": get_validation_error_yasg_response(),
+    }
+}
+
